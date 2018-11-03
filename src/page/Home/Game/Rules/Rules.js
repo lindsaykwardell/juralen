@@ -93,6 +93,7 @@ export const buildNewUnit = (state, Unit, cell) => {
     const resources = cloneResources(state.resources);
     const grid = cloneGrid(state.grid);
     let newUnit = new Unit();
+    newUnit.controlledBy = state.me;
 
     // Check if player can afford new unit.
     if (

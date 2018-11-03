@@ -88,24 +88,25 @@ export default class Game extends Component {
               .firestore()
               .collection("currentGames")
               .doc(this.state.gameID)
-              .onSnapshot(doc => {
-                const data = doc.data();
-                if (!data) {
-                  alert("The game has been disconnected.");
-                  this.endGameHandler();
-                } else {
-                  this.setState({
-                    gameID: doc.id,
-                    grid: cloneGrid(JSON.parse(data.grid)),
-                    resources: data.resources,
-                    currentTurn: data.currentTurn,
-                    gameLog: data.gameLog
-                  });
+              .onSnapshot(
+                doc => {
+                  const data = doc.data();
+                  if (!data) {
+                    this.gameCrashedHandler();
+                  } else {
+                    this.setState({
+                      gameID: doc.id,
+                      grid: cloneGrid(JSON.parse(data.grid)),
+                      resources: data.resources,
+                      currentTurn: data.currentTurn,
+                      gameLog: data.gameLog
+                    });
+                  }
+                },
+                error => {
+                  this.gameCrashedHandler();
                 }
-              }, (error) => {
-                alert("The game has been disconnected.");
-                this.endGameHandler();
-              });
+              );
           });
         });
     }
@@ -143,24 +144,25 @@ export default class Game extends Component {
         .firestore()
         .collection("currentGames")
         .doc(props.selectedGame)
-        .onSnapshot(doc => {
-          const data = doc.data();
-          if (!data) {
-            alert("The game has been disconnected.");
-            this.endGameHandler();
-          } else {
-            this.setState({
-              gameID: doc.id,
-              grid: cloneGrid(JSON.parse(data.grid)),
-              resources: data.resources,
-              currentTurn: data.currentTurn,
-              gameLog: data.gameLog
-            });
+        .onSnapshot(
+          doc => {
+            const data = doc.data();
+            if (!data) {
+              this.gameCrashedHandler();
+            } else {
+              this.setState({
+                gameID: doc.id,
+                grid: cloneGrid(JSON.parse(data.grid)),
+                resources: data.resources,
+                currentTurn: data.currentTurn,
+                gameLog: data.gameLog
+              });
+            }
+          },
+          error => {
+            this.gameCrashedHandler();
           }
-        }, (error) => {
-          alert("The game has been disconnected.");
-          this.endGameHandler();
-        });
+        );
     }
   }
 
@@ -259,51 +261,55 @@ export default class Game extends Component {
   };
 
   fortifyStructureHandler = cell => {
-    fortifyStructure(this.state, cell).then(res => {
-      this.setState({ ...res }, () => {
-        if (this.state.gameID) {
-          firebase
-            .firestore()
-            .collection("currentGames")
-            .doc(this.state.gameID)
-            .set(
-              {
-                grid: JSON.stringify(this.state.grid),
-                resources: this.state.resources,
-                gameLog: this.state.gameLog
-              },
-              { merge: true }
-            );
-        }
+    fortifyStructure(this.state, cell)
+      .then(res => {
+        this.setState({ ...res }, () => {
+          if (this.state.gameID) {
+            firebase
+              .firestore()
+              .collection("currentGames")
+              .doc(this.state.gameID)
+              .set(
+                {
+                  grid: JSON.stringify(this.state.grid),
+                  resources: this.state.resources,
+                  gameLog: this.state.gameLog
+                },
+                { merge: true }
+              );
+          }
+        });
+      })
+      .catch(err => {
+        alert(err);
       });
-    }).catch(err => {
-      alert(err);
-    });
   };
 
   upgradeStructureHandler = cell => {
-    upgradeStructure(this.state, cell).then(res => {
-      this.setState({ ...res }, () => {
-        if (this.state.gameID) {
-          firebase
-            .firestore()
-            .collection("currentGames")
-            .doc(this.state.gameID)
-            .set(
-              {
-                grid: JSON.stringify(this.state.grid),
-                resources: this.state.resources,
-                gameLog: this.state.gameLog
-              },
-              { merge: true }
-            );
-        }
+    upgradeStructure(this.state, cell)
+      .then(res => {
+        this.setState({ ...res }, () => {
+          if (this.state.gameID) {
+            firebase
+              .firestore()
+              .collection("currentGames")
+              .doc(this.state.gameID)
+              .set(
+                {
+                  grid: JSON.stringify(this.state.grid),
+                  resources: this.state.resources,
+                  gameLog: this.state.gameLog
+                },
+                { merge: true }
+              );
+          }
+        });
+      })
+      .catch(errors => {
+        errors.forEach(err => {
+          alert(err);
+        });
       });
-    }).catch(errors => {
-      errors.forEach(err => {
-        alert(err);
-      });
-    });
   };
 
   newTurnHandler = () => {
@@ -337,33 +343,43 @@ export default class Game extends Component {
   };
 
   endGameHandler = () => {
-    if (this.state.gameID) {
+    if (this.props.gameMode === "online") {
       this.listener();
-      firebase
-        .firestore()
-        .collection("currentGames")
-        .doc(this.state.gameID)
-        .set(
-          {
-            playerCount: 1
-          },
-          { merge: true }
-        );
-      if (this.props.hostingGame) {
+      if (this.state.gameID) {
         firebase
           .firestore()
           .collection("currentGames")
           .doc(this.state.gameID)
-          .delete();
+          .set(
+            {
+              playerCount: 1
+            },
+            { merge: true }
+          );
+        if (this.props.hostingGame) {
+          firebase
+            .firestore()
+            .collection("currentGames")
+            .doc(this.state.gameID)
+            .delete();
+        }
       }
     }
     this.props.endGame();
+  };
+
+  gameCrashedHandler = () => {
+    alert("The game has been disconnected.");
+    this.setState({ gameID: false }, () => {
+      this.endGameHandler();
+    });
   };
 
   render() {
     return (
       <div className={classes.game}>
         <Board
+          gameMode={this.props.gameMode}
           grid={this.state.grid}
           gridSize={this.props.gridSize}
           openCell={this.state.openCell}

@@ -75,15 +75,13 @@ export default props => {
                 return unit.name === "Soldier";
               });
               allUnits.splice(key, 1);
-              console.log(allUnits);
+
               count--;
-              console.log(count);
             }
             allUnits.push({
               name: "Soldiers",
               ID: Math.floor(Math.random() * 100000000000000)
             });
-            console.log(allUnits);
           }
           let renderUnits = allUnits.map(unit => {
             if (unit.name === "Soldier") {
@@ -106,15 +104,31 @@ export default props => {
                 />
               );
             }
-            if (unit.name === "Assassin" && cell.terrain !== "Forest") {
-              return (
-                <img
-                  key={unit.ID}
-                  src={assassin}
-                  alt="Assassin"
-                  style={{ width: "10px" }}
-                />
-              );
+            if (unit.name === "Assassin") {
+              if (props.gameMode === "hotseat" && cell.terrain !== "Forest") {
+                return (
+                  <img
+                    key={unit.ID}
+                    src={assassin}
+                    alt="Assassin"
+                    style={{ width: "10px" }}
+                  />
+                );
+              }
+              if (
+                props.gameMode === "online" &&
+                (cell.terrain !== "Forest" ||
+                  (cell.terrain === "Forest" && unit.controlledBy === props.me))
+              ) {
+                return (
+                  <img
+                    key={unit.ID}
+                    src={assassin}
+                    alt="Assassin"
+                    style={{ width: "10px" }}
+                  />
+                );
+              }
             }
             if (unit.name === "Knight") {
               return (
@@ -144,7 +158,7 @@ export default props => {
                   alt="Wizard"
                   style={{ width: "10px" }}
                 />
-              )
+              );
             }
             if (unit.name === "Priest") {
               return (
@@ -154,7 +168,7 @@ export default props => {
                   alt="Priest"
                   style={{ width: "10px" }}
                 />
-              )
+              );
             }
             return "";
           });
@@ -167,7 +181,6 @@ export default props => {
               movingSelectedUnits={props.movingSelectedUnits}
               moveCost={props.moveCost}
               resources={props.resources}
-              
               me={props.me}
               onClick={props.displayGridElement}
             >

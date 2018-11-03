@@ -9,7 +9,9 @@ class Priest {
   health = 5;
   maxHealth = 5;
   range = 0;
-  description = "Heals other units in this square during combat and at the end of each turn.";
+  description =
+    "Heals other units in this square during combat and at the end of each turn.";
+  controlledBy = null;
 }
 
 export default Priest;

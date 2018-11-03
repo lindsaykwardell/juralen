@@ -74,7 +74,7 @@ export default props => {
                   name="select"
                   id="exampleSelect"
                   onChange={props.updateGameMode}
-                  defaultValue={props.gameMode}
+                  value={props.gameMode}
                 >
                   <option value="hotseat">Hotseat</option>
                   <option value="online">Online</option>

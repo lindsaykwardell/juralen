@@ -10,6 +10,7 @@ class Archer {
   maxHealth = 3;
   range = 2;
   description = "Ranged military unit. Useful in offense or defense.";
+  controlledBy = null;
 }
 
 export default Archer;

@@ -36,7 +36,7 @@ export default class Home extends Component {
   }
 
   selectGameHandler = gameID => {
-    this.setState({ selectedGame: gameID });
+    this.setState({ selectedGame: gameID, gameMode: "online" });
   };
 
   loadSavedGame = () => {

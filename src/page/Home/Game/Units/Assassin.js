@@ -10,6 +10,7 @@ class Assassin {
   maxHealth = 1;
   range = 1;
   description = "Offensive unit. Can move twice, and hides in the forest.";
+  controlledBy = null;
 }
 
 export default Assassin;
