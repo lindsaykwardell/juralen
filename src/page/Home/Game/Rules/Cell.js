@@ -49,7 +49,6 @@ export default class Cell {
         if (roll2 > 40 && roll2 <= 50) {
           this.specialUnit = "Priest";
         }
-        this.specialUnit = "Assassin";
       }
       if (roll > 12 && roll <= 20) {
         this.terrain = "Mountain";
