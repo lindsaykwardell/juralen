@@ -10,9 +10,6 @@
 /build
 /dist
 
-# Development file
-/src/config/db/firebase.dev.js
-
 # misc
 .DS_Store
 .env.local
