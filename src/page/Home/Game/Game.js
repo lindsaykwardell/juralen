@@ -10,6 +10,7 @@ import Commands from "./Commands/Commands";
 import Units from "./Units/Units";
 import {
   cloneGrid,
+  cloneCell,
   generateGrid,
   loadGame,
   newTurn,
@@ -94,9 +95,11 @@ export default class Game extends Component {
                   if (!data) {
                     this.gameCrashedHandler();
                   } else {
+                    const grid = cloneGrid(JSON.parse(data.grid));
                     this.setState({
                       gameID: doc.id,
-                      grid: cloneGrid(JSON.parse(data.grid)),
+                      grid,
+                      openCell: cloneCell(grid[this.state.openCell.y][this.state.openCell.x]),
                       resources: data.resources,
                       currentTurn: data.currentTurn,
                       gameLog: data.gameLog
@@ -150,9 +153,11 @@ export default class Game extends Component {
             if (!data) {
               this.gameCrashedHandler();
             } else {
+              const grid = cloneGrid(JSON.parse(data.grid));
               this.setState({
                 gameID: doc.id,
-                grid: cloneGrid(JSON.parse(data.grid)),
+                grid,
+                openCell: cloneCell(grid[this.state.openCell.y][this.state.openCell.x]),
                 resources: data.resources,
                 currentTurn: data.currentTurn,
                 gameLog: data.gameLog

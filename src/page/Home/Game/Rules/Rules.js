@@ -4,7 +4,7 @@ export const cloneGrid = grid => {
   return grid.map(row => row.map(cell => cloneCell(cell)));
 };
 
-const cloneCell = cell => {
+export const cloneCell = cell => {
   return Object.assign(Object.create(Object.getPrototypeOf(new Cell())), cell, {
     units: {
       Player1: cell.units.Player1.map(unit => cloneUnit(unit)),
