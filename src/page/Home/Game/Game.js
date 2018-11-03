@@ -90,19 +90,37 @@ export default class Game extends Component {
               .doc(this.state.gameID)
               .onSnapshot(doc => {
                 const data = doc.data();
-                this.setState({
-                  gameID: doc.id,
-                  grid: cloneGrid(JSON.parse(data.grid)),
-                  resources: data.resources,
-                  currentTurn: data.currentTurn,
-                  gameLog: data.gameLog
-                });
+                if (!data) {
+                  alert("The game has been disconnected.");
+                  this.endGameHandler();
+                } else {
+                  this.setState({
+                    gameID: doc.id,
+                    grid: cloneGrid(JSON.parse(data.grid)),
+                    resources: data.resources,
+                    currentTurn: data.currentTurn,
+                    gameLog: data.gameLog
+                  });
+                }
+              }, (error) => {
+                alert("The game has been disconnected.");
+                this.endGameHandler();
               });
           });
         });
     }
 
     if (props.gameMode === "online" && !props.hostingGame) {
+      firebase
+        .firestore()
+        .collection("currentGames")
+        .doc(props.selectedGame)
+        .set(
+          {
+            playerCount: 2
+          },
+          { merge: true }
+        );
       const grid = generateGrid(props.gridSize);
       this.state = {
         grid,
@@ -127,13 +145,21 @@ export default class Game extends Component {
         .doc(props.selectedGame)
         .onSnapshot(doc => {
           const data = doc.data();
-          this.setState({
-            gameID: doc.id,
-            grid: cloneGrid(JSON.parse(data.grid)),
-            resources: data.resources,
-            currentTurn: data.currentTurn,
-            gameLog: data.gameLog
-          });
+          if (!data) {
+            alert("The game has been disconnected.");
+            this.endGameHandler();
+          } else {
+            this.setState({
+              gameID: doc.id,
+              grid: cloneGrid(JSON.parse(data.grid)),
+              resources: data.resources,
+              currentTurn: data.currentTurn,
+              gameLog: data.gameLog
+            });
+          }
+        }, (error) => {
+          alert("The game has been disconnected.");
+          this.endGameHandler();
         });
     }
   }
@@ -313,6 +339,16 @@ export default class Game extends Component {
   endGameHandler = () => {
     if (this.state.gameID) {
       this.listener();
+      firebase
+        .firestore()
+        .collection("currentGames")
+        .doc(this.state.gameID)
+        .set(
+          {
+            playerCount: 1
+          },
+          { merge: true }
+        );
       if (this.props.hostingGame) {
         firebase
           .firestore()
