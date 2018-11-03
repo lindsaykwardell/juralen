@@ -250,6 +250,8 @@ export default class Game extends Component {
             );
         }
       });
+    }).catch(err => {
+      alert(err);
     });
   };
 
@@ -270,6 +272,10 @@ export default class Game extends Component {
               { merge: true }
             );
         }
+      });
+    }).catch(errors => {
+      errors.forEach(err => {
+        alert(err);
       });
     });
   };

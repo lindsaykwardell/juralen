@@ -56,7 +56,7 @@ export const newTurn = (state, gridSize, endGame, gameMode) => {
       me = state.notMe;
       notMe = state.me;
     }
-    
+
     let gridControlCount = 0;
     // Check if notMe won last turn
     // Win cons: control half the board
@@ -165,41 +165,57 @@ export const selectAllUnits = units => {
 };
 
 export const fortifyStructure = (state, cell) => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const gameLog = [...state.gameLog];
     const grid = cloneGrid(state.grid);
     const resources = cloneResources(state.resources);
 
-    if (grid[cell.y][cell.x].structure === "Town") {
-      resources[state.me].gold -= 3;
-      resources[state.me].actions--;
-      grid[cell.y][cell.x].fortify();
+    if (resources[state.me].actions >= 1) {
+      if (
+        grid[cell.y][cell.x].structure === "Town" &&
+        resources[state.me].gold >= 3
+      ) {
+        resources[state.me].gold -= 3;
+        resources[state.me].actions--;
+        grid[cell.y][cell.x].fortify();
 
-      gameLog.unshift(
-        `${this.state.me} fortified a Town (${cell.x},${cell.y})`
-      );
-    } else if (grid[cell.y][cell.x].structure === "Castle") {
-      resources[state.me].gold -= 2;
-      resources[state.me].actions--;
-      grid[cell.y][cell.x].fortify();
+        gameLog.unshift(
+          `${this.state.me} fortified a Town (${cell.x},${cell.y})`
+        );
+      } else if (
+        grid[cell.y][cell.x].structure === "Castle" &&
+        resources[state.me].gold >= 2
+      ) {
+        resources[state.me].gold -= 2;
+        resources[state.me].actions--;
+        grid[cell.y][cell.x].fortify();
 
-      gameLog.unshift(`${state.me} fortified a Castle (${cell.x},${cell.y})`);
+        gameLog.unshift(`${state.me} fortified a Castle (${cell.x},${cell.y})`);
+      } else {
+        reject("You do not have enough gold.");
+      }
+      resolve({
+        gameLog,
+        grid,
+        resources,
+        openCell: cloneCell(grid[cell.y][cell.x])
+      });
+    } else {
+      reject("You do not have enough actions to fortify.");
     }
-    resolve({
-      gameLog,
-      grid,
-      resources,
-      openCell: cloneCell(grid[cell.y][cell.x])
-    });
   });
 };
 
 export const upgradeStructure = (state, cell) => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const gameLog = [...state.gameLog];
     const grid = cloneGrid(state.grid);
     const resources = cloneResources(state.resources);
-    if (grid[cell.y][cell.x].structure === "Town") {
+    if (
+      grid[cell.y][cell.x].structure === "Town" &&
+      resources[state.me].gold >= 7 &&
+      resources[state.me].actions >= 1
+    ) {
       resources[state.me].gold -= 7;
       resources[state.me].actions--;
       grid[cell.y][cell.x].upgradeToCastle();
@@ -207,13 +223,22 @@ export const upgradeStructure = (state, cell) => {
       gameLog.unshift(
         `${state.me} updated a Town to a Castle (${cell.x},${cell.y})`
       );
+      resolve({
+        grid,
+        gameLog,
+        resources,
+        openCell: cloneCell(grid[cell.y][cell.x])
+      });
+    } else {
+      const errors = [];
+      if (resources[state.me].gold < 7) {
+        errors.push("You do not have enough gold.");
+      }
+      if (resources[state.me].actions < 1) {
+        errors.push("You do not have enough actions.");
+      }
+      reject(errors);
     }
-    resolve({
-      grid,
-      gameLog,
-      resources,
-      openCell: cloneCell(grid[cell.y][cell.x])
-    });
   });
 };
 
