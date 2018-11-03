@@ -1,0 +1,13 @@
+.commands {
+  grid-column: 2;
+  grid-row: 4;
+}
+
+.box {
+  color: white;
+  padding: 15px;
+  border: 1px solid white;
+  border-radius: .25rem;
+  
+  overflow: auto;
+}

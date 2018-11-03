@@ -1,0 +1,4 @@
+.board {
+  background: black;
+  grid-row: 1 / span 4;
+}

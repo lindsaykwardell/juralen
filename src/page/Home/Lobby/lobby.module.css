@@ -1,0 +1,24 @@
+.enterGame {
+  width: 100%;
+  height: 40vh;
+}
+
+.box {
+  color: white;
+  padding: 15px;
+  border: 1px solid white;
+  border-radius: .25rem;
+  height: 43vh;
+  overflow: auto;
+}
+
+.availableGame {
+  cursor: pointer;
+  user-select: none;
+}
+
+.selectedGame {
+  cursor: pointer;
+  user-select: none;
+  background: #444;
+}
