@@ -47,7 +47,8 @@ export default class Game extends Component {
           selectedUnits: [],
           movingSelectedUnits: false,
           moveCost: 0,
-          gameLog: []
+          gameLog: [],
+          message: ""
         };
       }
     }
@@ -67,7 +68,8 @@ export default class Game extends Component {
         selectedUnits: [],
         movingSelectedUnits: false,
         moveCost: 0,
-        gameLog: []
+        gameLog: [],
+        message: ""
       };
       firebase
         .firestore()
@@ -116,6 +118,7 @@ export default class Game extends Component {
         movingSelectedUnits: false,
         moveCost: 0,
         gameLog: [],
+        message: "",
         gameID: props.selectedGame
       };
       this.listener = firebase
@@ -134,6 +137,31 @@ export default class Game extends Component {
         });
     }
   }
+
+  messageInputHandler = e => {
+    this.setState({ message: e.target.value });
+  };
+
+  submitMessageHandler = e => {
+    if (e.key === "Enter") {
+      const gameLog = [...this.state.gameLog];
+      gameLog.unshift(`${this.state.me}: ${this.state.message}`);
+      this.setState({ gameLog, message: "" }, () => {
+        if (this.state.gameID) {
+          firebase
+            .firestore()
+            .collection("currentGames")
+            .doc(this.state.gameID)
+            .set(
+              {
+                gameLog: this.state.gameLog
+              },
+              { merge: true }
+            );
+        }
+      });
+    }
+  };
 
   displayGridElementHandler = cell => {
     openSelectedCell(this.state, cell).then(res => {
@@ -332,6 +360,9 @@ export default class Game extends Component {
           fortifyStructure={this.fortifyStructureHandler}
           upgradeStructure={this.upgradeStructureHandler}
           gameLog={this.state.gameLog}
+          message={this.state.message}
+          messageInput={this.messageInputHandler}
+          submitMessage={this.submitMessageHandler}
           newTurn={this.newTurnHandler}
           selectUnit={index => {
             selectUnit(this.state, index).then(res => {

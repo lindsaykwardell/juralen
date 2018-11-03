@@ -2,7 +2,7 @@
   padding: 10px;
   display: grid;
   grid-template-columns: 900px minmax(400px, auto);
-  grid-template-rows: 7vh 28vh 10vh auto;
+  grid-template-rows: 7vh 28vh 10vh 43vh;
   grid-gap: 15px;
 }
 

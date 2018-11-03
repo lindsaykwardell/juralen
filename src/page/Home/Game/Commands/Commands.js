@@ -3,6 +3,9 @@ import { Row, Col, Button, Label, Input, Tooltip } from "reactstrap";
 
 import classes from "./Commands.module.css";
 
+const Player1 = "#dc3545";
+const Player2 = "#007bff";
+
 export default class Commands extends Component {
   state = {
     soldierTooltip: false,
@@ -232,9 +235,18 @@ export default class Commands extends Component {
             </div>: <div />}
           </Col>
           <Col xs="4" className={classes.box}>
-            {this.props.gameLog.map((log, index) => {
-              return <div key={index}>{log}</div>;
-            })}
+            <div className={classes.logbox}>
+              {this.props.gameLog.map((log, index) => {
+                if (log.includes("Player1: ")) {
+                  return <div key={index} style={{color: Player1, fontWeight: "bold"}}>{log}</div>;
+                }
+                if (log.includes("Player2: ")) {
+                  return <div key={index} style={{ color: Player2, fontWeight: "bold" }}>{log}</div>;
+                }
+                return <div key={index}>{log}</div>;
+              })}
+            </div>
+            <Input type="text" className="mt-2" value={this.props.message} onChange={this.props.messageInput} onKeyPress={this.props.submitMessage} />
           </Col>
         </Row>
       </div>

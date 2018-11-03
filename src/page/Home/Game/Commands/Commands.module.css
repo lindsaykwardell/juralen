@@ -8,6 +8,12 @@
   padding: 15px;
   border: 1px solid white;
   border-radius: .25rem;
-  
+  height: 43vh;
+}
+
+.logbox {
+  color: white;
+  border-radius: .25rem;
+  height: 33vh;
   overflow: auto;
 }

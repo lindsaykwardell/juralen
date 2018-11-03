@@ -37,7 +37,7 @@ Combat is automatic and instant. Units are chosen at random, then attack each ot
 ### Game Modes
 
 - Hotseat Mode - Two players take turns using the same computer to play. Turns pass between each player.
-- Online Mode - Two players play across the Internet. When "Pass Turn" is clicked, the game gives control to the other player. Currently this is functional, but very limited. Later iterations will include a chat feature, and possibly turn timers. Online play currently is open to anyone, but will eventually require authentication.
+- Online Mode - Two players play across the Internet. When "Pass Turn" is clicked, the game gives control to the other player. Currently this is functional, but very limited. Online play currently is open to anyone, but will eventually require authentication.
 - LAN Mode (to come) - Two players play over a local network. This will require download of the Desktop version of the game (to come).
 
 - 2-Player: Each player is started in a corner.
