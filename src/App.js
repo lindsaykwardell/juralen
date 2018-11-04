@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +20,7 @@ class App extends Component {
   render() {
     return (
       <div style={{ background: "#333" }}>
-        <Route path="/" exact component={Home} />
+        <Home />
       </div>
     );
   }

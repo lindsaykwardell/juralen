@@ -6,19 +6,20 @@ import Game from "./Game/Game";
 import firebase from "../../config/db/firebase";
 
 export default class Home extends Component {
-  state = {
-    playerName: "",
-    gridSize: "9",
-    gameMode: "hotseat",
-    hostingGame: false,
-    isGameStarted: false,
-    usingSavedGame: false,
-    availableGames: [],
-    selectedGame: ""
-  };
+  constructor() {
+    super();
+    const defaultName = localStorage.getItem("PlayerName") || "New Game";
+    this.state = {
+      playerName: defaultName,
+      gridSize: "9",
+      gameMode: "hotseat",
+      hostingGame: false,
+      isGameStarted: false,
+      usingSavedGame: false,
+      availableGames: [],
+      selectedGame: ""
+    };
 
-  componentWillMount() {
-    const defaultName = localStorage.getItem("PlayerName") || "Player 1";
     firebase
       .firestore()
       .collection("currentGames")
@@ -32,7 +33,6 @@ export default class Home extends Component {
         });
         this.setState({ availableGames });
       });
-    this.setState({ playerName: defaultName });
   }
 
   selectGameHandler = gameID => {
