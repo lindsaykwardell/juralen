@@ -29,7 +29,7 @@ export default props => {
                 <img
                   src={town}
                   alt={cell.structure}
-                  style={{ width: "70px" }}
+                  className={classes.structure}
                 />
               );
             } else if (cell.structure === "Castle") {
@@ -37,7 +37,7 @@ export default props => {
                 <img
                   src={castle}
                   alt={cell.structure}
-                  style={{ width: "65px" }}
+                  className={classes.structure}
                 />
               );
             }
@@ -48,7 +48,7 @@ export default props => {
                 <img
                   src={forest}
                   alt={cell.terrain}
-                  style={{ width: "65px" }}
+                  className={classes.structure}
                 />
               );
             } else if (cell.terrain === "Mountain") {
@@ -56,7 +56,7 @@ export default props => {
                 <img
                   src={mountain}
                   alt={cell.terrain}
-                  style={{ width: "65px" }}
+                  className={classes.structure}
                 />
               );
             } else {
@@ -90,7 +90,7 @@ export default props => {
                   key={unit.ID}
                   src={soldier}
                   alt="Soldier"
-                  style={{ width: "10px" }}
+                  className={classes.unit}
                 />
               );
             }
@@ -100,7 +100,7 @@ export default props => {
                   key={unit.ID}
                   src={soldiers}
                   alt="Soldiers"
-                  style={{ width: "10px" }}
+                  className={classes.unit}
                 />
               );
             }
@@ -111,7 +111,7 @@ export default props => {
                     key={unit.ID}
                     src={assassin}
                     alt="Assassin"
-                    style={{ width: "10px" }}
+                    className={classes.unit}
                   />
                 );
               }
@@ -125,7 +125,7 @@ export default props => {
                     key={unit.ID}
                     src={assassin}
                     alt="Assassin"
-                    style={{ width: "10px" }}
+                    className={classes.unit}
                   />
                 );
               }
@@ -136,7 +136,7 @@ export default props => {
                   key={unit.ID}
                   src={knight}
                   alt="Knight"
-                  style={{ width: "10px" }}
+                  className={classes.unit}
                 />
               );
             }
@@ -146,7 +146,7 @@ export default props => {
                   key={unit.ID}
                   src={archer}
                   alt="Archer"
-                  style={{ width: "10px" }}
+                  className={classes.unit}
                 />
               );
             }
@@ -156,7 +156,7 @@ export default props => {
                   key={unit.ID}
                   src={wizard}
                   alt="Wizard"
-                  style={{ width: "10px" }}
+                  className={classes.unit}
                 />
               );
             }
@@ -166,7 +166,7 @@ export default props => {
                   key={unit.ID}
                   src={priest}
                   alt="Priest"
-                  style={{ width: "10px" }}
+                  className={classes.unit}
                 />
               );
             }

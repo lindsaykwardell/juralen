@@ -29,7 +29,7 @@ export default props => {
   });
 
   return (
-    <div>
+    <div style={{ overflow: "hidden" }}>
       <Row className="px-5">
         <Col>
           <Button

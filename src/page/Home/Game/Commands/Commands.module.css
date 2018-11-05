@@ -1,6 +1,7 @@
 .commands {
   grid-column: 2;
   grid-row: 4;
+  overflow: hidden;
 }
 
 .box {
@@ -16,4 +17,18 @@
   border-radius: .25rem;
   height: 33vh;
   overflow: auto;
+}
+
+.logboxContainer {
+  margin-right: 15px;
+}
+
+@media all and (max-width: 768px) {
+  .logboxContainer {
+    display: none;
+  }
+
+  .box {
+    height: 100%;
+  }
 }

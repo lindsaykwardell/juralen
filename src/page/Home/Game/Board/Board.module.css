@@ -2,3 +2,23 @@
   background: black;
   grid-row: 1 / span 4;
 }
+
+.structure {
+  width: 65px;
+}
+
+.unit {
+  width: 10px;
+}
+
+@media all and (max-width: 768px) {
+  .structure {
+    width: 27px;
+  }
+
+  .unit {
+    width: 5px;
+    position: relative;
+    top: -8px;
+  }
+}

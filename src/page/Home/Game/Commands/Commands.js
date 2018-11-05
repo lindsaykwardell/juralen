@@ -201,7 +201,7 @@ export default class Commands extends Component {
     }
     return (
       <div className={classes.commands}>
-        <Row style={{ width: "100%", height: "100%" }}>
+        <Row>
           <Col>
             {this.props.me === this.props.currentTurn ? <div className={classes.box}>
               {units}
@@ -234,7 +234,7 @@ export default class Commands extends Component {
               {upgradeOption}
             </div>: <div />}
           </Col>
-          <Col xs="4" className={classes.box}>
+          <Col xs="4" className={`${classes.box} ${classes.logboxContainer}`}>
             <div className={classes.logbox}>
               {this.props.gameLog.map((log, index) => {
                 if (log.includes("Player1: ")) {

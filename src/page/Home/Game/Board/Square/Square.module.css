@@ -1,0 +1,14 @@
+.cell {
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+}
+
+@media all and (max-width: 768px) {
+  .cell {
+    width: 43px;
+    height: 43px;
+  }
+}

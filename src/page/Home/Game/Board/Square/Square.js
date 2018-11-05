@@ -1,6 +1,8 @@
 import React from "react";
 import Radium from "radium";
 
+import classes from "./Square.module.css"
+
 export default Radium(props => {
   const cellIsSelected =
     props.cellData.x === props.openCell.x &&
@@ -25,12 +27,7 @@ export default Radium(props => {
   }
   const cell = {
     border: cellIsInRange ? "1px solid yellow" : boarderColor,
-    boxSizing: "border-box",
-    width: "100px",
-    height: "100px",
-    background: props.cellData.color,
-    cursor: "pointer",
-    userSelect: "none"
+    background: props.cellData.color
   };
 
   const aboveCell = {
@@ -42,7 +39,7 @@ export default Radium(props => {
 
   return (
     <td style={aboveCell}>
-      <div style={cell} onClick={() => props.onClick(props.cellData)}>
+      <div className={classes.cell} style={cell} onClick={() => props.onClick(props.cellData)}>
         {props.children}
       </div>
     </td>
