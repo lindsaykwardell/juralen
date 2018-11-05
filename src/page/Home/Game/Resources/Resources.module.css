@@ -5,12 +5,13 @@
   padding: 15px;
   border: 1px solid white;
   border-radius: .25rem;
-  height: 100%;
+  height: 100px;
   overflow: auto;
 }
 
 @media all and (max-width: 768px) {
   .box {
     font-size: 0.8rem;
+    height: 100%;
   }
 }
