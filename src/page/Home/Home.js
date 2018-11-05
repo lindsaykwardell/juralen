@@ -112,7 +112,7 @@ export default class Home extends Component {
             updateGameMode={this.updateGameMode}
           />
         )}
-        <audio id="theme" autoPlay>
+        <audio id="theme">
           <source src={anInnocentSword} type="audio/mpeg" />
         </audio>
       </div>
