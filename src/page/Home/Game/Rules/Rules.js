@@ -181,7 +181,7 @@ export const fortifyStructure = (state, cell) => {
         grid[cell.y][cell.x].fortify();
 
         gameLog.unshift(
-          `${this.state.me} fortified a Town (${cell.x},${cell.y})`
+          `${state.me} fortified a Town (${cell.x},${cell.y})`
         );
       } else if (
         grid[cell.y][cell.x].structure === "Castle" &&
