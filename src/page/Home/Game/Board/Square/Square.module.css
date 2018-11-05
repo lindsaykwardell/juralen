@@ -10,10 +10,11 @@
   .cell {
     /* width: 43px; */
     height: 80px;
+    /* height: 43px; */
   }
 }
 
-@media all and (max-width: 414px) {
+@media all and (max-width: 500px) {
   .cell {
     /* width: 43px; */
     height: 43px;
