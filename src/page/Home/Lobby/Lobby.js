@@ -8,6 +8,7 @@ import {
   Label,
   Input
 } from "reactstrap";
+import Menu from "../../../components/Menu/Menu";
 import classes from "./lobby.module.css";
 
 export default props => {
@@ -29,44 +30,37 @@ export default props => {
   });
 
   return (
-    <div className="container" style={{ overflow: "hidden" }}>
-      <Row>
-        <Col xs="6">
-          <Button
-            outline
-            color="primary"
-            className={classes.enterGame}
-            onClick={props.hostGame}
-          >
-            <h3>{props.gameMode === "hotseat" ? "New Game" : "Host Game"}</h3>
-          </Button>
-        </Col>
-        <Col xs="6">
-          <Button
-            outline
-            color="info"
-            className={classes.enterGame}
-            onClick={props.joinGame}
-          >
-            <h3>Join Game</h3>
-          </Button>
-        </Col>
-      </Row>
+    <div style={{ overflow: "hidden" }}>
+      <Container>
+        <Row>
+          <Col className={props.menuOption === "new" ? "" : classes.inactive}>
+            <Button
+              outline
+              color="primary"
+              className={classes.enterGame}
+              onClick={props.hostGame}
+            >
+              <h3>{props.gameMode === "hotseat" ? "New Game" : "Host Game"}</h3>
+            </Button>
+          </Col>
+          <Col className={props.menuOption === "join" ? "" : classes.inactive}>
+            <Button
+              outline
+              color="info"
+              className={classes.enterGame}
+              onClick={props.joinGame}
+            >
+              <h3>Join Game</h3>
+            </Button>
+          </Col>
+        </Row>
+      </Container>
       <Container className="p-2">
         <Row>
-          <Col>
+          <Col className={props.menuOption === "new" ? "" : classes.inactive}>
             <div className={classes.box}>
               <h5>Settings</h5>
               <hr />
-              <FormGroup>
-                <Label for="playerName">Game Name</Label>
-                <Input
-                  id="playerName"
-                  type="text"
-                  value={props.playerName}
-                  onChange={props.updateName}
-                />
-              </FormGroup>
               <FormGroup>
                 <Label>Game Mode</Label>
                 <Input
@@ -80,6 +74,19 @@ export default props => {
                   <option value="online">Online</option>
                 </Input>
               </FormGroup>
+              {props.gameMode === "online" ? (
+                <FormGroup>
+                  <Label for="playerName">Game Name</Label>
+                  <Input
+                    id="playerName"
+                    type="text"
+                    value={props.playerName}
+                    onChange={props.updateName}
+                  />
+                </FormGroup>
+              ) : (
+                ""
+              )}
               <FormGroup>
                 <Label>Grid Size</Label>
                 <Input
@@ -96,7 +103,7 @@ export default props => {
               </FormGroup>
             </div>
           </Col>
-          <Col>
+          <Col className={props.menuOption === "join" ? "" : classes.inactive}>
             <div className={classes.box}>
               <h5>Current Games:</h5>
               <hr />
@@ -105,6 +112,28 @@ export default props => {
           </Col>
         </Row>
       </Container>
+      <Menu>
+        <Row>
+          <Col>
+            <Button
+              color="dark"
+              style={{ width: "100%" }}
+              onClick={() => props.updateMenuOption("new")}
+            >
+              New
+            </Button>
+          </Col>
+          <Col>
+            <Button
+              color="dark"
+              style={{ width: "100%" }}
+              onClick={() => props.updateMenuOption("join")}
+            >
+              Join
+            </Button>
+          </Col>
+        </Row>
+      </Menu>
     </div>
   );
 };

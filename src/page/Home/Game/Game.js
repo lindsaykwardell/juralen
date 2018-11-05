@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {Row, Col, Button} from "reactstrap";
 import firebase from "../../../config/db/firebase";
 
 import Board from "./Board/Board";
@@ -6,7 +7,7 @@ import Scoreboard from "./Scoreboard/Scoreboard";
 import Details from "./Details/Details";
 import Resources from "./Resources/Resources";
 import Commands from "./Commands/Commands";
-import Menu from "./Menu/Menu";
+import Menu from "../../../components/Menu/Menu";
 
 import Units from "./Units/Units";
 import {
@@ -459,7 +460,19 @@ export default class Game extends Component {
             }}
           />
         </div>
-        <Menu click={this.menuClickHandler} />
+        <Menu>
+          <Row>
+            <Col>
+              <Button color="dark" style={{ width: "100%" }} onClick={() => this.menuClickHandler("details")}>Details</Button>
+            </Col>
+            <Col>
+              <Button color="dark" style={{ width: "100%" }} onClick={() => this.menuClickHandler("commands")}>Commands</Button>
+            </Col>
+            <Col>
+              <Button color="dark" style={{ width: "100%" }} onClick={() => this.menuClickHandler("log")}>Log</Button>
+            </Col>
+          </Row>
+        </Menu>
       </div>
     );
   }

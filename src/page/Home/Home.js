@@ -4,6 +4,7 @@ import Lobby from "./Lobby/Lobby";
 import Game from "./Game/Game";
 
 import firebase from "../../config/db/firebase";
+import isElectron from "../../config/isElectron";
 
 import anInnocentSword from "../../audio/an-innocent-sword.mp3";
 
@@ -19,7 +20,8 @@ export default class Home extends Component {
       isGameStarted: false,
       usingSavedGame: false,
       availableGames: [],
-      selectedGame: ""
+      selectedGame: "",
+      menuOption: "new"
     };
 
     firebase
@@ -83,38 +85,50 @@ export default class Home extends Component {
     this.setState({ gameMode: e.target.value });
   };
 
+  updateMenuOptionHandler = option => {
+    this.setState({menuOption: option});
+  }
+
   render() {
     return (
-      <div className="mt-2">
-        {this.state.isGameStarted ? (
-          <Game
-            gameMode={this.state.gameMode}
-            hostingGame={this.state.hostingGame}
-            gameName={this.state.playerName}
-            selectedGame={this.state.selectedGame}
-            gridSize={this.state.gridSize}
-            usingSavedGame={this.state.usingSavedGame}
-            endGame={this.toggleGameState}
-          />
-        ) : (
-          <Lobby
-            availableGames={this.state.availableGames}
-            selectedGame={this.state.selectedGame}
-            selectGame={this.selectGameHandler}
-            playerName={this.state.playerName}
-            gameMode={this.state.gameMode}
-            gridSize={this.state.gridSize}
-            hostGame={this.hostGameHandler}
-            joinGame={this.joinGameHandler}
-            loadSavedGame={this.loadSavedGame}
-            updateName={this.updateNameHandler}
-            updateGridSize={this.updateGridSizeHandler}
-            updateGameMode={this.updateGameMode}
-          />
-        )}
-        <audio id="theme">
-          <source src={anInnocentSword} type="audio/mpeg" />
-        </audio>
+      <div>
+        <div className="mt-2">
+          {this.state.isGameStarted ? (
+            <Game
+              gameMode={this.state.gameMode}
+              hostingGame={this.state.hostingGame}
+              gameName={this.state.playerName}
+              selectedGame={this.state.selectedGame}
+              gridSize={this.state.gridSize}
+              usingSavedGame={this.state.usingSavedGame}
+              endGame={this.toggleGameState}
+            />
+          ) : (
+            <Lobby
+              availableGames={this.state.availableGames}
+              selectedGame={this.state.selectedGame}
+              selectGame={this.selectGameHandler}
+              playerName={this.state.playerName}
+              gameMode={this.state.gameMode}
+              gridSize={this.state.gridSize}
+              menuOption={this.state.menuOption}
+              updateMenuOption={this.updateMenuOptionHandler}
+              hostGame={this.hostGameHandler}
+              joinGame={this.joinGameHandler}
+              loadSavedGame={this.loadSavedGame}
+              updateName={this.updateNameHandler}
+              updateGridSize={this.updateGridSizeHandler}
+              updateGameMode={this.updateGameMode}
+            />
+          )}
+          {isElectron ? (
+            <audio id="theme">
+              <source src={anInnocentSword} type="audio/mpeg" />
+            </audio>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
     );
   }
