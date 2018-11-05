@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
-//import Header from "./components/Frame/Header";
 import Home from "./page/Home/Home";
 
 library.add(faBars);

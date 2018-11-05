@@ -5,6 +5,8 @@ import Game from "./Game/Game";
 
 import firebase from "../../config/db/firebase";
 
+import anInnocentSword from "../../audio/an-innocent-sword.mp3";
+
 export default class Home extends Component {
   constructor() {
     super();
@@ -33,6 +35,12 @@ export default class Home extends Component {
         });
         this.setState({ availableGames });
       });
+  }
+
+  componentDidMount() {
+    // setTimeout(() => {
+    //   document.querySelector("#theme").play();
+    // }, 500);
   }
 
   selectGameHandler = gameID => {
@@ -104,6 +112,9 @@ export default class Home extends Component {
             updateGameMode={this.updateGameMode}
           />
         )}
+        <audio id="theme" autoPlay>
+          <source src={anInnocentSword} type="audio/mpeg" />
+        </audio>
       </div>
     );
   }
