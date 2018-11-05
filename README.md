@@ -10,7 +10,7 @@ To come. Basic premise is that a lot of warlords are fighing over the Juralen Va
 
 ### Rules
 
-Currently, the game creation screen only allows hot-seat mode for two players. Player 1 will always go first. Each player starts with five gold, and four actions. Players may only build soldiers from their starting castle, but other units may be recruitable from nearby towns. Controlling more plains creates farms, which allows for more units to be controlled. Controlling more towns gives you more actions to take per turn.
+The game supports both hotseat mode and online play for two players. Player 1 will always go first. Each player starts with five gold, and four actions. Players may only build soldiers from their starting castle, but other units may be recruitable from nearby towns. Controlling more plains creates farms, which allows for more units to be controlled. Controlling more towns gives you more actions to take per turn. Forests and Mountains cannot be controlled, and do not provide any resources (although Forests do provide some protection).
 
 ### Movement
 
@@ -51,4 +51,4 @@ Combat is automatic and instant. Units are chosen at random, then attack each ot
 - 7x7
 - 9x9
 
-This game is in active development. The plan is to build out an Electron app for local network play with up to four players, or online play. There may also be an Android app that will be built, but for now will remain a desktop-focused game.
+This game is in active development. The plan is to build out an Electron app for local network play with up to four players, or online play. There may also be an Android app that will be built, but for now the mobile experience is acceptable.
