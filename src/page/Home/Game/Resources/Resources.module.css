@@ -8,3 +8,9 @@
   height: 100%;
   overflow: auto;
 }
+
+@media all and (max-width: 768px) {
+  .box {
+    font-size: 0.8rem;
+  }
+}

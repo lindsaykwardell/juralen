@@ -8,13 +8,13 @@
   color: white;
   padding: 15px;
   border: 1px solid white;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   /* height: 43vh; */
 }
 
 .logbox {
   color: white;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   max-height: 300px;
   overflow: auto;
 }
@@ -24,11 +24,20 @@
 }
 
 @media all and (max-width: 768px) {
-  .logboxContainer {
+  .inactive {
     display: none;
+  }
+
+  .logbox {
+    max-height: 140px;
+  }
+
+  .logboxContainer {
+    margin: 15px;
   }
 
   .box {
     height: 100%;
+    margin-bottom: 50px;
   }
 }

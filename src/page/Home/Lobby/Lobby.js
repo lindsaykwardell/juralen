@@ -29,9 +29,9 @@ export default props => {
   });
 
   return (
-    <div style={{ overflow: "hidden" }}>
-      <Row className="px-5">
-        <Col>
+    <div className="container" style={{ overflow: "hidden" }}>
+      <Row>
+        <Col xs="6">
           <Button
             outline
             color="primary"
@@ -41,7 +41,7 @@ export default props => {
             <h3>{props.gameMode === "hotseat" ? "New Game" : "Host Game"}</h3>
           </Button>
         </Col>
-        <Col>
+        <Col xs="6">
           <Button
             outline
             color="info"

@@ -32,9 +32,14 @@ export default props => {
         });
       }
     }
-    
+
     return (
-      <div className={classes.box} style={{ background: props.openCell.color }}>
+      <div
+        className={`${classes.box} ${
+          props.activeData !== "details" ? classes.inactive : ""
+        }`}
+        style={{ background: props.openCell.color }}
+      >
         <div className="row">
           <div className="col">
             <h3>Details</h3>
@@ -48,8 +53,8 @@ export default props => {
           <br />
           Terrain: {props.openCell.terrain}
           <br />
-          Structure: {props.openCell.structure} (Defense Bonus: {props.openCell.defBonus})
-          <br />
+          Structure: {props.openCell.structure} (Defense Bonus:{" "}
+          {props.openCell.defBonus})<br />
           Units:
           <br />
           Player 1: {player1Units}

@@ -26,6 +26,7 @@ export default class Commands extends Component {
       buildOption = (
         <span>
           <Button
+            size="sm"
             id="soldierButton"
             className="mt-1 mr-1"
             color="info"
@@ -51,6 +52,7 @@ export default class Commands extends Component {
           {this.props.openCell.specialUnit !== "None" ? (
             <span>
               <Button
+                size="sm"
                 id="specialUnit"
                 className="mt-1 mr-1"
                 color="info"
@@ -89,6 +91,7 @@ export default class Commands extends Component {
         upgradeOption = (
           <span>
             <Button
+              size="sm"
               id="fortifyButton"
               className="mt-1 mr-1"
               color="warning"
@@ -107,6 +110,7 @@ export default class Commands extends Component {
               Increase defense bonus by 1.
             </Tooltip>
             <Button
+              size="sm"
               id="upgradeButton"
               className="mt-1 mr-1"
               color="warning"
@@ -131,6 +135,7 @@ export default class Commands extends Component {
         upgradeOption = (
           <span>
             <Button
+              size="sm"
               id="fortifyButton"
               className="mt-1 mr-1"
               color="warning"
@@ -202,51 +207,93 @@ export default class Commands extends Component {
     return (
       <div className={classes.commands}>
         <Row>
-          <Col>
-            {this.props.me === this.props.currentTurn ? <div className={classes.box}>
-              {units}
-              <hr />
-              <Button
-                color="success"
-                onClick={this.props.newTurn}
-                style={{ float: "right" }}
-              >
-                Pass Turn
-              </Button>
-              {this.props.openCell &&
-              this.props.openCell.units &&
-              this.props.openCell.units[this.props.me].length > 0 ? (
-                <Button className="mr-1" onClick={this.props.selectAllUnits}>
-                  Select All
+          <Col
+            className={
+              this.props.activeData !== "commands" ? classes.inactive : ""
+            }
+          >
+            {this.props.me === this.props.currentTurn ? (
+              <div className={classes.box}>
+                {units}
+                <hr />
+                <Button
+                  size="sm"
+                  color="success"
+                  onClick={this.props.newTurn}
+                  style={{ float: "right" }}
+                >
+                  Pass Turn
                 </Button>
-              ) : (
-                ""
-              )}
-              {this.props.selectedUnits.length > 0 ? (
-                <Button className="mr-1" onClick={this.props.moveUnits}>
-                  Move Selected
-                </Button>
-              ) : (
-                ""
-              )}
-              <br />
-              {buildOption} <br />
-              {upgradeOption}
-            </div>: <div />}
+                {this.props.openCell &&
+                this.props.openCell.units &&
+                this.props.openCell.units[this.props.me].length > 0 ? (
+                  <Button
+                    size="sm"
+                    className="mr-1"
+                    onClick={this.props.selectAllUnits}
+                  >
+                    Select All
+                  </Button>
+                ) : (
+                  ""
+                )}
+                {this.props.selectedUnits.length > 0 ? (
+                  <Button
+                    size="sm"
+                    className="mr-1"
+                    onClick={this.props.moveUnits}
+                  >
+                    Move Selected
+                  </Button>
+                ) : (
+                  ""
+                )}
+                <br />
+                {buildOption} <br />
+                {upgradeOption}
+              </div>
+            ) : (
+              <div />
+            )}
           </Col>
-          <Col xs="4" className={`${classes.box} ${classes.logboxContainer}`}>
+          <Col
+            sm="4"
+            className={`${classes.box} ${classes.logboxContainer} ${
+              this.props.activeData !== "log" ? classes.inactive : ""
+            }`}
+          >
             <div className={classes.logbox}>
               {this.props.gameLog.map((log, index) => {
                 if (log.includes("Player1: ")) {
-                  return <div key={index} style={{color: Player1, fontWeight: "bold"}}>{log}</div>;
+                  return (
+                    <div
+                      key={index}
+                      style={{ color: Player1, fontWeight: "bold" }}
+                    >
+                      {log}
+                    </div>
+                  );
                 }
                 if (log.includes("Player2: ")) {
-                  return <div key={index} style={{ color: Player2, fontWeight: "bold" }}>{log}</div>;
+                  return (
+                    <div
+                      key={index}
+                      style={{ color: Player2, fontWeight: "bold" }}
+                    >
+                      {log}
+                    </div>
+                  );
                 }
                 return <div key={index}>{log}</div>;
               })}
             </div>
-            <Input type="text" className="mt-2" value={this.props.message} onChange={this.props.messageInput} onKeyPress={this.props.submitMessage} />
+            <Input
+              type="text"
+              className="mt-2"
+              value={this.props.message}
+              onChange={this.props.messageInput}
+              onKeyPress={this.props.submitMessage}
+            />
           </Col>
         </Row>
       </div>

@@ -6,6 +6,7 @@ import Scoreboard from "./Scoreboard/Scoreboard";
 import Details from "./Details/Details";
 import Resources from "./Resources/Resources";
 import Commands from "./Commands/Commands";
+import Menu from "./Menu/Menu";
 
 import Units from "./Units/Units";
 import {
@@ -49,7 +50,8 @@ export default class Game extends Component {
           movingSelectedUnits: false,
           moveCost: 0,
           gameLog: [],
-          message: ""
+          message: "",
+          activeData: "commands"
         };
       }
     }
@@ -70,7 +72,8 @@ export default class Game extends Component {
         movingSelectedUnits: false,
         moveCost: 0,
         gameLog: [],
-        message: ""
+        message: "",
+        activeData: "commands"
       };
       firebase
         .firestore()
@@ -99,7 +102,9 @@ export default class Game extends Component {
                     this.setState({
                       gameID: doc.id,
                       grid,
-                      openCell: cloneCell(grid[this.state.openCell.y][this.state.openCell.x]),
+                      openCell: cloneCell(
+                        grid[this.state.openCell.y][this.state.openCell.x]
+                      ),
                       resources: data.resources,
                       currentTurn: data.currentTurn,
                       gameLog: data.gameLog
@@ -141,7 +146,8 @@ export default class Game extends Component {
         moveCost: 0,
         gameLog: [],
         message: "",
-        gameID: props.selectedGame
+        gameID: props.selectedGame,
+        activeData: "commands"
       };
       this.listener = firebase
         .firestore()
@@ -157,7 +163,9 @@ export default class Game extends Component {
               this.setState({
                 gameID: doc.id,
                 grid,
-                openCell: cloneCell(grid[this.state.openCell.y][this.state.openCell.x]),
+                openCell: cloneCell(
+                  grid[this.state.openCell.y][this.state.openCell.x]
+                ),
                 resources: data.resources,
                 currentTurn: data.currentTurn,
                 gameLog: data.gameLog
@@ -380,66 +388,78 @@ export default class Game extends Component {
     });
   };
 
+  menuClickHandler = option => {
+    this.setState({activeData: option});
+  }
+
   render() {
     return (
-      <div className={classes.game}>
-        <Board
-          gameMode={this.props.gameMode}
-          grid={this.state.grid}
-          gridSize={this.props.gridSize}
-          openCell={this.state.openCell}
-          movingSelectedUnits={this.state.movingSelectedUnits}
-          moveCost={this.state.moveCost}
-          resources={this.state.resources}
-          me={this.state.me}
-          displayGridElement={this.displayGridElementHandler}
-        />
-        <Scoreboard
-          currentTurn={this.state.currentTurn}
-          endGame={this.endGameHandler}
-          saveGame={() => {
-            localStorage.setItem("savedGame", JSON.stringify(this.state));
-            alert("Game saved!");
-          }}
-        />
-        <Details openCell={this.state.openCell} me={this.state.me} />
-        <Resources
-          myResources={
-            this.state.me === "Player1"
-              ? this.state.resources.Player1
-              : this.state.resources.Player2
-          }
-        />
-        <Commands
-          me={this.state.me}
-          notMe={this.state.notMe}
-          currentTurn={this.state.currentTurn}
-          openCell={this.state.openCell}
-          units={Units}
-          buildUnit={this.buildUnitHandler}
-          selectedUnits={this.state.selectedUnits}
-          moveUnits={this.moveUnitsHandler}
-          moveIsActive={this.state.movingSelectedUnits}
-          fortifyStructure={this.fortifyStructureHandler}
-          upgradeStructure={this.upgradeStructureHandler}
-          gameLog={this.state.gameLog}
-          message={this.state.message}
-          messageInput={this.messageInputHandler}
-          submitMessage={this.submitMessageHandler}
-          newTurn={this.newTurnHandler}
-          selectUnit={index => {
-            selectUnit(this.state, index).then(res => {
-              this.setState({ ...res });
-            });
-          }}
-          selectAllUnits={() => {
-            selectAllUnits(this.state.openCell.units[this.state.me]).then(
-              res => {
+      <div>
+        <div className={classes.game}>
+          <Board
+            gameMode={this.props.gameMode}
+            grid={this.state.grid}
+            gridSize={this.props.gridSize}
+            openCell={this.state.openCell}
+            movingSelectedUnits={this.state.movingSelectedUnits}
+            moveCost={this.state.moveCost}
+            resources={this.state.resources}
+            me={this.state.me}
+            displayGridElement={this.displayGridElementHandler}
+          />
+          <Scoreboard
+            currentTurn={this.state.currentTurn}
+            endGame={this.endGameHandler}
+            saveGame={() => {
+              localStorage.setItem("savedGame", JSON.stringify(this.state));
+              alert("Game saved!");
+            }}
+          />
+          <Resources
+            myResources={
+              this.state.me === "Player1"
+                ? this.state.resources.Player1
+                : this.state.resources.Player2
+            }
+          />
+          <Details
+            openCell={this.state.openCell}
+            me={this.state.me}
+            activeData={this.state.activeData}
+          />
+          <Commands
+            me={this.state.me}
+            notMe={this.state.notMe}
+            currentTurn={this.state.currentTurn}
+            openCell={this.state.openCell}
+            units={Units}
+            buildUnit={this.buildUnitHandler}
+            selectedUnits={this.state.selectedUnits}
+            moveUnits={this.moveUnitsHandler}
+            moveIsActive={this.state.movingSelectedUnits}
+            fortifyStructure={this.fortifyStructureHandler}
+            upgradeStructure={this.upgradeStructureHandler}
+            gameLog={this.state.gameLog}
+            message={this.state.message}
+            activeData={this.state.activeData}
+            messageInput={this.messageInputHandler}
+            submitMessage={this.submitMessageHandler}
+            newTurn={this.newTurnHandler}
+            selectUnit={index => {
+              selectUnit(this.state, index).then(res => {
                 this.setState({ ...res });
-              }
-            );
-          }}
-        />
+              });
+            }}
+            selectAllUnits={() => {
+              selectAllUnits(this.state.openCell.units[this.state.me]).then(
+                res => {
+                  this.setState({ ...res });
+                }
+              );
+            }}
+          />
+        </div>
+        <Menu click={this.menuClickHandler} />
       </div>
     );
   }

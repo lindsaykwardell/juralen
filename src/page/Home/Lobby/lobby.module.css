@@ -22,3 +22,9 @@
   user-select: none;
   background: #444;
 }
+
+@media all and (max-width: 768px) {
+  .enterGame {
+    height: 200px;
+  }
+}

@@ -18,6 +18,10 @@
 }
 
 @media all and (max-width: 768px) {
+  .board {
+    padding-top: 33px;
+  }
+
   .structure {
     width: 50%;
   }
