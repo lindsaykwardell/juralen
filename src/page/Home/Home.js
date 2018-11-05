@@ -66,6 +66,14 @@ export default class Home extends Component {
   };
 
   toggleGameState = () => {
+    if (isElectron) {
+      if (this.state.isGameStarted) {
+        document.querySelector("#theme").pause();
+        document.querySelector("#theme").currentTime = 0;
+      } else {
+        document.querySelector("#theme").play();
+      }
+    }
     this.setState({
       isGameStarted: !this.state.isGameStarted,
       usingSavedGame: false
@@ -122,7 +130,7 @@ export default class Home extends Component {
             />
           )}
           {isElectron ? (
-            <audio id="theme">
+            <audio id="theme" autoPlay loop>
               <source src={anInnocentSword} type="audio/mpeg" />
             </audio>
           ) : (
