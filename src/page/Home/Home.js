@@ -7,6 +7,7 @@ import firebase from "../../config/db/firebase";
 import isElectron from "../../config/isElectron";
 
 import anInnocentSword from "../../audio/an-innocent-sword.mp3";
+import celticWarrior from "../../audio/celtic-warrior.mp3";
 
 export default class Home extends Component {
   constructor() {
@@ -21,7 +22,8 @@ export default class Home extends Component {
       usingSavedGame: false,
       availableGames: [],
       selectedGame: "",
-      menuOption: "new"
+      menuOption: "new",
+      audio: new Audio()
     };
 
     firebase
@@ -40,10 +42,31 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   document.querySelector("#theme").play();
-    // }, 500);
+    if (isElectron) {
+      const audio = new Audio();
+      audio.src = celticWarrior;
+      this.setState({ audio }, () => {
+        this.state.audio.play();
+        this.state.audio.addEventListener("ended", this.currentAudioDidEnd);
+      });
+    }
+    // document.querySelector("#theme").addEventListener("ended", () => {
+    //   const audio = new Audio();
+    //   audio.src = celticWarrior;
+    //   audio.play();
+    //   // document.querySelector("#theme").src = celticWarrior;
+    //   // document.querySelector("#theme").play();
+    // });
   }
+
+  currentAudioDidEnd = () => {
+    const audio = new Audio();
+    audio.src = celticWarrior;
+    this.setState({ audio }, () => {
+      this.state.audio.play();
+      this.state.audio.addEventListener("ended", this.currentAudioDidEnd);
+    });
+  };
 
   selectGameHandler = gameID => {
     this.setState({ selectedGame: gameID, gameMode: "online" });

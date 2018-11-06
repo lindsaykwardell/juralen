@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {Row, Col, Button} from "reactstrap";
 import firebase from "../../../config/db/firebase";
+import isElectron from "../../../config/isElectron";
 
 import Board from "./Board/Board";
 import Scoreboard from "./Scoreboard/Scoreboard";
@@ -26,7 +27,40 @@ import {
   endTurn
 } from "./Rules/Rules";
 
+import anInnocentSword from "../../../audio/an-innocent-sword.mp3";
+import crusadeOfTheCastellan from "../../../audio/crusade-of-the-castellan.mp3";
+import guardians from "../../../audio/guardians.mp3";
+import landOfAFolkDivided from "../../../audio/land-of-a-folk-divided.mp3";
+import rememberTheWay from "../../../audio/remember-the-way.mp3";
+import streetsOfSantIvo from "../../../audio/streets-of-santivo.mp3";
+
 import classes from "./Game.module.css";
+
+const soundtrack = [
+  anInnocentSword,
+  crusadeOfTheCastellan,
+  guardians,
+  landOfAFolkDivided,
+  rememberTheWay,
+  streetsOfSantIvo
+];
+
+const initialGameState = {
+  resources: {
+    Player1: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 },
+    Player2: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 }
+  },
+  currentTurn: "Player1",
+  me: "Player1",
+  notMe: "Player2",
+  selectedUnits: [],
+  movingSelectedUnits: false,
+  moveCost: 0,
+  gameLog: [],
+  message: "",
+  activeData: "commands",
+  audio: new Audio()
+};
 
 export default class Game extends Component {
   constructor(props) {
@@ -38,21 +72,9 @@ export default class Game extends Component {
       } else {
         const grid = generateGrid(props.gridSize);
         this.state = {
+          ...initialGameState,
           grid,
           openCell: grid[0][0],
-          resources: {
-            Player1: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 },
-            Player2: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 }
-          },
-          currentTurn: "Player1",
-          me: "Player1",
-          notMe: "Player2",
-          selectedUnits: [],
-          movingSelectedUnits: false,
-          moveCost: 0,
-          gameLog: [],
-          message: "",
-          activeData: "commands"
         };
       }
     }
@@ -60,21 +82,9 @@ export default class Game extends Component {
     if (props.gameMode === "online" && props.hostingGame) {
       const grid = generateGrid(props.gridSize);
       this.state = {
+        ...initialGameState,
         grid,
         openCell: grid[0][0],
-        resources: {
-          Player1: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 },
-          Player2: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 }
-        },
-        currentTurn: "Player1",
-        me: "Player1",
-        notMe: "Player2",
-        selectedUnits: [],
-        movingSelectedUnits: false,
-        moveCost: 0,
-        gameLog: [],
-        message: "",
-        activeData: "commands"
       };
       firebase
         .firestore()
@@ -133,22 +143,13 @@ export default class Game extends Component {
         );
       const grid = generateGrid(props.gridSize);
       this.state = {
+        ...initialGameState,
         grid,
         openCell: grid[0][0],
-        resources: {
-          Player1: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 },
-          Player2: { actions: 4, gold: 5, farms: 1, towns: 1, units: 0 }
-        },
-        currentTurn: "Player1",
         me: "Player2",
         notMe: "Player1",
-        selectedUnits: [],
-        movingSelectedUnits: false,
-        moveCost: 0,
-        gameLog: [],
-        message: "",
         gameID: props.selectedGame,
-        activeData: "commands"
+        
       };
       this.listener = firebase
         .firestore()
@@ -178,6 +179,22 @@ export default class Game extends Component {
           }
         );
     }
+  }
+
+  componentDidMount() {
+    if (isElectron) {
+      this.startAudio();
+    }
+  }
+
+  startAudio = () => {
+    const track = Math.floor(Math.random() * soundtrack.length - 1);
+    const audio = new Audio();
+    audio.src = soundtrack[track];
+    this.setState({audio}, () => {
+      this.state.audio.play();
+      this.state.audio.addEventListener("ended", this.startAudio);
+    })
   }
 
   messageInputHandler = e => {
@@ -357,6 +374,7 @@ export default class Game extends Component {
   };
 
   endGameHandler = () => {
+    this.state.audio.pause();
     if (this.props.gameMode === "online") {
       this.listener();
       if (this.state.gameID) {
