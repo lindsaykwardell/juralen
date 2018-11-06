@@ -84,21 +84,25 @@ export default class Home extends Component {
   };
 
   toggleGameState = () => {
-    if (isElectron) {
-      if (!this.state.isGameStarted) {
-        this.state.audio.pause();
-        const audio = new Audio();
-        audio.src = celticWarrior;
-        this.setState({ audio });
-      } else {
-        setTimeout(() => {
-          this.state.audio.play();
-        }, 1000);
+    this.props.toggleTransition().then(() => {
+      if (isElectron) {
+        if (!this.state.isGameStarted) {
+          this.state.audio.pause();
+          const audio = new Audio();
+          audio.src = celticWarrior;
+          this.setState({ audio });
+        } else {
+          setTimeout(() => {
+            this.state.audio.play();
+          }, 1000);
+        }
       }
-    }
-    this.setState({
-      isGameStarted: !this.state.isGameStarted,
-      usingSavedGame: false
+      this.setState({
+        isGameStarted: !this.state.isGameStarted,
+        usingSavedGame: false
+      }, () => {
+        this.props.toggleTransition();
+      });
     });
   };
 
