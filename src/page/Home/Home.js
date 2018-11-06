@@ -49,13 +49,6 @@ export default class Home extends Component {
         this.state.audio.addEventListener("ended", this.currentAudioDidEnd);
       });
     }
-    // document.querySelector("#theme").addEventListener("ended", () => {
-    //   const audio = new Audio();
-    //   audio.src = celticWarrior;
-    //   audio.play();
-    //   // document.querySelector("#theme").src = celticWarrior;
-    //   // document.querySelector("#theme").play();
-    // });
   }
 
   currentAudioDidEnd = () => {
@@ -129,7 +122,7 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <div className="mt-2">
+        <div>
           {this.state.isGameStarted ? (
             <Game
               gameMode={this.state.gameMode}

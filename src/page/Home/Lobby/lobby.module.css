@@ -10,6 +10,7 @@
   border-radius: 0.25rem;
   height: 43vh;
   overflow: auto;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .availableGame {
@@ -29,8 +30,8 @@
   }
 
   .box {
-    height: 60vh;
-    margin-bottom: 50px;
+    height: 53vh;
+    margin-bottom: 100px;
   }
 
   .enterGame {
