@@ -62,7 +62,10 @@ export default class Home extends Component {
     const audio = new Audio();
     audio.src = celticWarrior;
     this.setState({ audio }, () => {
-      this.state.audio.play();
+      setTimeout(() => {
+        this.state.audio.play();  
+      }, 1000);
+      
       this.state.audio.addEventListener("ended", this.currentAudioDidEnd);
     });
   };
@@ -90,10 +93,14 @@ export default class Home extends Component {
   toggleGameState = () => {
     if (isElectron) {
       if (!this.state.isGameStarted) {
-        document.querySelector("#theme").pause();
-        document.querySelector("#theme").currentTime = 0;
+        this.state.audio.pause();
+        const audio = new Audio();
+        audio.src = celticWarrior;
+        this.setState({ audio });
       } else {
-        document.querySelector("#theme").play();
+        setTimeout(() => {
+          this.state.audio.play();
+        }, 1000);
       }
     }
     this.setState({
