@@ -67,7 +67,7 @@ export default class Home extends Component {
 
   toggleGameState = () => {
     if (isElectron) {
-      if (this.state.isGameStarted) {
+      if (!this.state.isGameStarted) {
         document.querySelector("#theme").pause();
         document.querySelector("#theme").currentTime = 0;
       } else {
@@ -94,8 +94,8 @@ export default class Home extends Component {
   };
 
   updateMenuOptionHandler = option => {
-    this.setState({menuOption: option});
-  }
+    this.setState({ menuOption: option });
+  };
 
   render() {
     return (
