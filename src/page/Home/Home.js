@@ -6,7 +6,6 @@ import Game from "./Game/Game";
 import firebase from "../../config/db/firebase";
 import isElectron from "../../config/isElectron";
 
-import anInnocentSword from "../../audio/an-innocent-sword.mp3";
 import celticWarrior from "../../audio/celtic-warrior.mp3";
 
 export default class Home extends Component {
@@ -151,13 +150,6 @@ export default class Home extends Component {
               updateGridSize={this.updateGridSizeHandler}
               updateGameMode={this.updateGameMode}
             />
-          )}
-          {isElectron ? (
-            <audio id="theme" autoPlay loop>
-              <source src={anInnocentSword} type="audio/mpeg" />
-            </audio>
-          ) : (
-            ""
           )}
         </div>
       </div>
