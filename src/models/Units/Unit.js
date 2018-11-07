@@ -1,3 +1,5 @@
+import sfx from "../../audio/sfx";
+
 export default class Unit {
   constructor() {
     this.ID = Math.floor(Math.random() * 100000000000000);
@@ -10,8 +12,24 @@ export default class Unit {
     this.health = 0;
     this.maxHealth = 0;
     this.range = 0;
-    this.description = "You shouldn't see this."
+    this.description = "You shouldn't see this.";
     this.controlledBy = null;
+  }
+
+  isBuilt() {
+    if (sfx.built[this.name]) {
+      const audio = new Audio();
+      audio.src = sfx.built[this.name];
+      audio.play();
+    }
+  }
+
+  isClicked() {
+    if (sfx.clicked[this.name]) {
+      const audio = new Audio();
+      audio.src = sfx.clicked[this.name];
+      audio.play();
+    }
   }
 
   attack() {

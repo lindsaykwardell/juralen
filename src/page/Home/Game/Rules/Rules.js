@@ -1,38 +1,8 @@
-import Cell from "./Cell";
-import Unit from "../Units/Unit";
+import Cell from "../../../../models/Cell/Cell";
+//import Unit from "../../../../models/Units/Unit";
+import * as Clone from "../../../../utility/clone";
 
-import isElectron from "../../../../config/isElectron";
-
-import sfxSoldier from "../../../../audio/soldier.wav"
-import sfxKnight from "../../../../audio/knight.wav";
-import sfxWizard from "../../../../audio/wizard.wav"
-import sfxWizard2 from "../../../../audio/wizard2.wav"
-
-export const cloneGrid = grid => {
-  return grid.map(row => row.map(cell => cloneCell(cell)));
-};
-
-export const cloneCell = cell => {
-  return Object.assign(Object.create(Object.getPrototypeOf(new Cell())), cell, {
-    units: {
-      Player1: cell.units.Player1.map(unit => cloneUnit(unit)),
-      Player2: cell.units.Player2.map(unit => cloneUnit(unit))
-    }
-  });
-};
-
-const cloneUnit = unit => {
-  return Object.assign(Object.create(Object.getPrototypeOf(new Unit())), unit);
-};
-
-const cloneResources = resources => {
-  const keys = Object.keys(resources);
-  const clonedResources = {};
-  keys.forEach(key => {
-    clonedResources[key] = { ...resources[key] };
-  });
-  return clonedResources;
-};
+//import isElectron from "../../../../config/isElectron";
 
 export const generateGrid = gridSize => {
   const grid = [];
@@ -49,14 +19,14 @@ export const generateGrid = gridSize => {
 };
 
 export const loadGame = state => {
-  const grid = cloneGrid(state.grid);
-  const openCell = cloneCell(grid[state.openCell.y][state.openCell.x]);
+  const grid = Clone.Grid(state.grid);
+  const openCell = Clone.Cell(grid[state.openCell.y][state.openCell.x]);
   return { ...state, grid, openCell };
 };
 
 export const newTurn = (state, gridSize, endGame, gameMode) => {
   return new Promise(resolve => {
-    const resources = cloneResources(state.resources);
+    const resources = Clone.Resources(state.resources);
     let me = state.me;
     let notMe = state.notMe;
     let currentTurn = notMe;
@@ -98,8 +68,8 @@ export const newTurn = (state, gridSize, endGame, gameMode) => {
 export const buildNewUnit = (state, Unit, cell) => {
   return new Promise((resolve, reject) => {
     const gameLog = [...state.gameLog];
-    const resources = cloneResources(state.resources);
-    const grid = cloneGrid(state.grid);
+    const resources = Clone.Resources(state.resources);
+    const grid = Clone.Grid(state.grid);
     const newUnit = new Unit();
     newUnit.controlledBy = state.me;
 
@@ -124,21 +94,10 @@ export const buildNewUnit = (state, Unit, cell) => {
       grid[cell.y][cell.x].units[state.me].push(newUnit);
 
       // Update openCell
-      const openCell = cloneCell(grid[cell.y][cell.x]);
+      const openCell = Clone.Cell(grid[cell.y][cell.x]);
 
       // Play appropriate audio
-      const audio = new Audio();
-      switch (newUnit.name) {
-        case "Knight":
-          audio.src = sfxKnight;
-          break;
-        case "Wizard":
-          audio.src = sfxWizard2;
-          break;
-        default:
-          audio.src = sfxSoldier;
-      }
-      audio.play();
+      newUnit.isBuilt();
 
       // Return
       resolve({ grid, openCell, resources, gameLog });
@@ -168,18 +127,7 @@ export const selectUnit = (state, unit) => {
     if (key !== -1) {
       selectedUnits.splice(key, 1);
     } else {
-      const audio = new Audio();
-      switch (unit.name) {
-        case "Knight": 
-          audio.src = sfxKnight;
-          break;
-        case "Wizard":
-          audio.src = sfxWizard;
-          break;
-        default:
-          audio.src = sfxSoldier;
-      }
-      audio.play();
+      unit.isClicked();
       selectedUnits.push(unit.ID);
     }
     resolve({ selectedUnits, movingSelectedUnits: false });
@@ -202,8 +150,8 @@ export const selectAllUnits = units => {
 export const fortifyStructure = (state, cell) => {
   return new Promise((resolve, reject) => {
     const gameLog = [...state.gameLog];
-    const grid = cloneGrid(state.grid);
-    const resources = cloneResources(state.resources);
+    const grid = Clone.Grid(state.grid);
+    const resources = Clone.Resources(state.resources);
 
     if (resources[state.me].actions >= 1) {
       if (
@@ -231,7 +179,7 @@ export const fortifyStructure = (state, cell) => {
         gameLog,
         grid,
         resources,
-        openCell: cloneCell(grid[cell.y][cell.x])
+        openCell: Clone.Cell(grid[cell.y][cell.x])
       });
     } else {
       reject("You do not have enough actions to fortify.");
@@ -242,8 +190,8 @@ export const fortifyStructure = (state, cell) => {
 export const upgradeStructure = (state, cell) => {
   return new Promise((resolve, reject) => {
     const gameLog = [...state.gameLog];
-    const grid = cloneGrid(state.grid);
-    const resources = cloneResources(state.resources);
+    const grid = Clone.Grid(state.grid);
+    const resources = Clone.Resources(state.resources);
     if (
       grid[cell.y][cell.x].structure === "Town" &&
       resources[state.me].gold >= 7 &&
@@ -260,7 +208,7 @@ export const upgradeStructure = (state, cell) => {
         grid,
         gameLog,
         resources,
-        openCell: cloneCell(grid[cell.y][cell.x])
+        openCell: Clone.Cell(grid[cell.y][cell.x])
       });
     } else {
       const errors = [];
@@ -281,7 +229,7 @@ export const toggleMoveMode = state => {
       let moveCost = 0;
       let wizardMove = 1;
       state.selectedUnits.forEach(unitID => {
-        let unit = cloneUnit(
+        let unit = Clone.Unit(
           state.openCell.units[state.me].find(unit => unit.ID === unitID)
         );
         if (unit.name === "Wizard") wizardMove = unit.move;
@@ -299,10 +247,10 @@ export const toggleMoveMode = state => {
 
 export const openSelectedCell = (state, cell) => {
   return new Promise((resolve, reject) => {
-    const grid = cloneGrid(state.grid);
-    const newCell = cloneCell(grid[cell.y][cell.x]);
-    const prevCell = cloneCell(grid[state.openCell.y][state.openCell.x]);
-    let resources = cloneResources(state.resources);
+    const grid = Clone.Grid(state.grid);
+    const newCell = Clone.Cell(grid[cell.y][cell.x]);
+    const prevCell = Clone.Cell(grid[state.openCell.y][state.openCell.x]);
+    let resources = Clone.Resources(state.resources);
     let gameLog = [...state.gameLog];
 
     if (state.movingSelectedUnits) {
@@ -318,7 +266,7 @@ export const openSelectedCell = (state, cell) => {
         resources[state.me].actions -= state.moveCost * distance;
         // Move each unit
         state.selectedUnits.forEach(unitID => {
-          let unit = cloneUnit(
+          let unit = Clone.Unit(
             prevCell.units[state.me].find(unit => unit.ID === unitID)
           );
           // Remove one move
@@ -338,7 +286,7 @@ export const openSelectedCell = (state, cell) => {
         ) {
           // Run combat
           const combatResult = newCell.runCombat(
-            cloneResources(resources),
+            Clone.Resources(resources),
             [...gameLog],
             state.me,
             state.notMe
@@ -373,8 +321,8 @@ export const openSelectedCell = (state, cell) => {
     }
 
     // Update grid to match changes
-    grid[prevCell.y][prevCell.x] = cloneCell(prevCell);
-    grid[newCell.y][newCell.x] = cloneCell(newCell);
+    grid[prevCell.y][prevCell.x] = Clone.Cell(prevCell);
+    grid[newCell.y][newCell.x] = Clone.Cell(newCell);
 
     resolve({
       selectedUnits: [],
@@ -391,7 +339,7 @@ export const openSelectedCell = (state, cell) => {
 export const endTurn = state => {
   return new Promise(resolve => {
     const gameLog = [...state.gameLog];
-    const grid = cloneGrid(state.grid);
+    const grid = Clone.Grid(state.grid);
     grid.forEach(row => {
       row.forEach(cell => {
         cell.units.Player1.forEach(unit => {
@@ -439,7 +387,7 @@ export const endTurn = state => {
     resolve({
       grid,
       gameLog,
-      openCell: cloneCell(grid[state.openCell.y][state.openCell.x])
+      openCell: Clone.Cell(grid[state.openCell.y][state.openCell.x])
     });
   });
 };

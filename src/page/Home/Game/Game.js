@@ -10,10 +10,8 @@ import Resources from "./Resources/Resources";
 import Commands from "./Commands/Commands";
 import Menu from "../../../components/Menu/Menu";
 
-import Units from "./Units/Units";
+import Units from "../../../models/Units/Units";
 import {
-  cloneGrid,
-  cloneCell,
   generateGrid,
   loadGame,
   newTurn,
@@ -26,6 +24,8 @@ import {
   openSelectedCell,
   endTurn
 } from "./Rules/Rules";
+
+import * as Clone from "../../../utility/clone";
 
 import anInnocentSword from "../../../audio/an-innocent-sword.mp3";
 import crusadeOfTheCastellan from "../../../audio/crusade-of-the-castellan.mp3";
@@ -109,11 +109,11 @@ export default class Game extends Component {
                   if (!data) {
                     this.gameCrashedHandler();
                   } else {
-                    const grid = cloneGrid(JSON.parse(data.grid));
+                    const grid = Clone.Grid(JSON.parse(data.grid));
                     this.setState({
                       gameID: doc.id,
                       grid,
-                      openCell: cloneCell(
+                      openCell: Clone.Cell(
                         grid[this.state.openCell.y][this.state.openCell.x]
                       ),
                       resources: data.resources,
@@ -161,11 +161,11 @@ export default class Game extends Component {
             if (!data) {
               this.gameCrashedHandler();
             } else {
-              const grid = cloneGrid(JSON.parse(data.grid));
+              const grid = Clone.Grid(JSON.parse(data.grid));
               this.setState({
                 gameID: doc.id,
                 grid,
-                openCell: cloneCell(
+                openCell: Clone.Cell(
                   grid[this.state.openCell.y][this.state.openCell.x]
                 ),
                 resources: data.resources,
@@ -269,6 +269,12 @@ export default class Game extends Component {
         });
       });
   };
+
+  selectUnitHandler = unit => {
+    selectUnit(this.state, unit).then(res => {
+      this.setState({ ...res });
+    });
+  }
 
   moveUnitsHandler = () => {
     toggleMoveMode(this.state).then(res => {
@@ -464,11 +470,7 @@ export default class Game extends Component {
             messageInput={this.messageInputHandler}
             submitMessage={this.submitMessageHandler}
             newTurn={this.newTurnHandler}
-            selectUnit={index => {
-              selectUnit(this.state, index).then(res => {
-                this.setState({ ...res });
-              });
-            }}
+            selectUnit={this.selectUnitHandler}
             selectAllUnits={() => {
               selectAllUnits(this.state.openCell.units[this.state.me]).then(
                 res => {

@@ -186,7 +186,7 @@ export default class Commands extends Component {
                       className="invisible"
                       value={unit.ID}
                       onClick={() => {
-                        if (unit.movesLeft > 0) this.props.selectUnit(unit.ID);
+                        if (unit.movesLeft > 0) this.props.selectUnit(unit);
                       }}
                     />{" "}
                     {unit.name}
