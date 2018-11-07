@@ -1,4 +1,5 @@
 import sfx from "../../audio/sfx";
+import isElectron from "../../config/isElectron";
 
 export default class Unit {
   constructor() {
@@ -17,7 +18,7 @@ export default class Unit {
   }
 
   isBuilt() {
-    if (sfx.built[this.name]) {
+    if (isElectron && sfx.built[this.name]) {
       const audio = new Audio();
       audio.src = sfx.built[this.name];
       audio.play();
@@ -25,7 +26,7 @@ export default class Unit {
   }
 
   isClicked() {
-    if (sfx.clicked[this.name]) {
+    if (isElectron && sfx.clicked[this.name]) {
       const audio = new Audio();
       audio.src = sfx.clicked[this.name];
       audio.play();
