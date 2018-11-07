@@ -1,16 +1,19 @@
-class Knight {
-  ID = Math.floor(Math.random() * 100000000000000);
-  name = "Knight";
-  cost = 6;
-  move = 1;
-  movesLeft = 3;
-  maxMoves = 3;
-  attack = 2;
-  health = 4;
-  maxHealth = 4;
-  range = 1;
-  description = "Strong mobile unit. Can move three times.";
-  controlledBy = null;
+import Unit from "./Unit";
+
+class Knight extends Unit {
+  constructor() {
+    super();
+    this.name = "Knight";
+    this.cost = 6;
+    this.move = 1;
+    this.movesLeft = 3;
+    this.maxMoves = 3;
+    this.attack = 2;
+    this.health = 4;
+    this.maxHealth = 4;
+    this.range = 1;
+    this.description = "Strong mobile unit. Can move three times.";
+  }
 }
 
 export default Knight;

@@ -1,17 +1,20 @@
-class Wizard {
-  ID = Math.floor(Math.random() * 100000000000000);
-  name = "Wizard";
-  cost = 7;
-  move = 0.5;
-  movesLeft = 2;
-  maxMoves = 2;
-  attack = 1;
-  health = 1;
-  maxHealth = 1;
-  range = 2;
-  description =
-    "Highly mobile unit. Capable of teleporting other units across the board. Can also move twice.";
-  controlledBy = null;
+import Unit from "./Unit";
+
+class Wizard extends Unit {
+  constructor() {
+    super();
+    this.name = "Wizard";
+    this.cost = 7;
+    this.move = 0.5;
+    this.movesLeft = 2;
+    this.maxMoves = 2;
+    this.attack = 1;
+    this.health = 1;
+    this.maxHealth = 1;
+    this.range = 2;
+    this.description =
+      "Highly mobile unit. Capable of teleporting other units across the board. Can also move twice.";
+  }
 }
 
 export default Wizard;

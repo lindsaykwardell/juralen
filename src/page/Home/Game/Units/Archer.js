@@ -1,16 +1,19 @@
-class Archer {
-  ID = Math.floor(Math.random() * 100000000000000);
-  name = "Archer";
-  cost = 3;
-  move = 1;
-  movesLeft = 1;
-  maxMoves = 1;
-  attack = 1;
-  health = 3;
-  maxHealth = 3;
-  range = 2;
-  description = "Ranged military unit. Useful in offense or defense.";
-  controlledBy = null;
+import Unit from "./Unit";
+
+class Archer extends Unit {
+  constructor() {
+    super();
+    this.name = "Archer";
+    this.cost = 3;
+    this.move = 1;
+    this.movesLeft = 1;
+    this.maxMoves = 1;
+    this.attack = 1;
+    this.health = 3;
+    this.maxHealth = 3;
+    this.range = 2;
+    this.description = "Ranged military unit. Useful in offense or defense.";
+  }
 }
 
 export default Archer;

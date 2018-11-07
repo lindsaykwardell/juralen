@@ -1,15 +1,18 @@
-class Soldier {
-  ID = Math.floor(Math.random() * 100000000000000);
-  name = "Soldier";
-  cost = 2;
-  move = 1;
-  movesLeft = 1;
-  maxMoves = 1;
-  attack = 1;
-  health = 3;
-  maxHealth = 3;
-  range = 1;
-  controlledBy = null;
+import Unit from "./Unit";
+
+class Soldier extends Unit {
+  constructor() {
+    super();
+    this.name = "Soldier";
+    this.cost = 2;
+    this.move = 1;
+    this.movesLeft = 1;
+    this.maxMoves = 1;
+    this.attack = 1;
+    this.health = 3;
+    this.maxHealth = 3;
+    this.range = 1;
+  }
 }
 
 export default Soldier;

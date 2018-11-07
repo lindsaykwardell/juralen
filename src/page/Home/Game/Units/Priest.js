@@ -1,17 +1,20 @@
-class Priest {
-  ID = Math.floor(Math.random() * 100000000000000);
-  name = "Priest";
-  cost = 4;
-  move = 1;
-  movesLeft = 1;
-  maxMoves = 1;
-  attack = 0;
-  health = 5;
-  maxHealth = 5;
-  range = 0;
-  description =
-    "Heals other units in this square during combat and at the end of each turn.";
-  controlledBy = null;
+import Unit from "./Unit";
+
+class Priest extends Unit {
+  constructor() {
+    super();
+    this.name = "Priest";
+    this.cost = 4;
+    this.move = 1;
+    this.movesLeft = 1;
+    this.maxMoves = 1;
+    this.attack = 0;
+    this.health = 5;
+    this.maxHealth = 5;
+    this.range = 0;
+    this.description =
+      "Heals other units in this square during combat and at the end of each turn.";
+  }
 }
 
 export default Priest;

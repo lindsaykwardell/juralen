@@ -1,4 +1,12 @@
 import Cell from "./Cell";
+import Unit from "../Units/Unit";
+
+import isElectron from "../../../../config/isElectron";
+
+import sfxSoldier from "../../../../audio/soldier.wav"
+import sfxKnight from "../../../../audio/knight.wav";
+import sfxWizard from "../../../../audio/wizard.wav"
+import sfxWizard2 from "../../../../audio/wizard2.wav"
 
 export const cloneGrid = grid => {
   return grid.map(row => row.map(cell => cloneCell(cell)));
@@ -14,7 +22,7 @@ export const cloneCell = cell => {
 };
 
 const cloneUnit = unit => {
-  return Object.assign(Object.create(Object.getPrototypeOf(unit)), unit);
+  return Object.assign(Object.create(Object.getPrototypeOf(new Unit())), unit);
 };
 
 const cloneResources = resources => {
@@ -92,7 +100,7 @@ export const buildNewUnit = (state, Unit, cell) => {
     const gameLog = [...state.gameLog];
     const resources = cloneResources(state.resources);
     const grid = cloneGrid(state.grid);
-    let newUnit = new Unit();
+    const newUnit = new Unit();
     newUnit.controlledBy = state.me;
 
     // Check if player can afford new unit.
@@ -118,6 +126,20 @@ export const buildNewUnit = (state, Unit, cell) => {
       // Update openCell
       const openCell = cloneCell(grid[cell.y][cell.x]);
 
+      // Play appropriate audio
+      const audio = new Audio();
+      switch (newUnit.name) {
+        case "Knight":
+          audio.src = sfxKnight;
+          break;
+        case "Wizard":
+          audio.src = sfxWizard2;
+          break;
+        default:
+          audio.src = sfxSoldier;
+      }
+      audio.play();
+
       // Return
       resolve({ grid, openCell, resources, gameLog });
     } else {
@@ -137,16 +159,28 @@ export const buildNewUnit = (state, Unit, cell) => {
   });
 };
 
-export const selectUnit = (state, index) => {
+export const selectUnit = (state, unit) => {
   return new Promise((resolve, reject) => {
     const selectedUnits = [...state.selectedUnits];
     const key = selectedUnits.findIndex(unitID => {
-      return unitID === index;
+      return unitID === unit.ID;
     });
     if (key !== -1) {
       selectedUnits.splice(key, 1);
     } else {
-      selectedUnits.push(index);
+      const audio = new Audio();
+      switch (unit.name) {
+        case "Knight": 
+          audio.src = sfxKnight;
+          break;
+        case "Wizard":
+          audio.src = sfxWizard;
+          break;
+        default:
+          audio.src = sfxSoldier;
+      }
+      audio.play();
+      selectedUnits.push(unit.ID);
     }
     resolve({ selectedUnits, movingSelectedUnits: false });
   });
@@ -180,9 +214,7 @@ export const fortifyStructure = (state, cell) => {
         resources[state.me].actions--;
         grid[cell.y][cell.x].fortify();
 
-        gameLog.unshift(
-          `${state.me} fortified a Town (${cell.x},${cell.y})`
-        );
+        gameLog.unshift(`${state.me} fortified a Town (${cell.x},${cell.y})`);
       } else if (
         grid[cell.y][cell.x].structure === "Castle" &&
         resources[state.me].gold >= 2
