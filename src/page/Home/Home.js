@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Button } from "reactstrap";
 
 import Lobby from "./Lobby/Lobby";
 import Game from "./Game/Game";
@@ -56,9 +57,9 @@ export default class Home extends Component {
     audio.src = celticWarrior;
     this.setState({ audio }, () => {
       setTimeout(() => {
-        this.state.audio.play();  
+        this.state.audio.play();
       }, 1000);
-      
+
       this.state.audio.addEventListener("ended", this.currentAudioDidEnd);
     });
   };
@@ -97,12 +98,17 @@ export default class Home extends Component {
           }, 1000);
         }
       }
-      this.setState({
-        isGameStarted: !this.state.isGameStarted,
-        usingSavedGame: false
-      }, () => {
-        this.props.toggleTransition();
-      });
+      this.setState(
+        {
+          isGameStarted: !this.state.isGameStarted,
+          usingSavedGame: false
+        },
+        () => {
+          setTimeout(() => {
+            this.props.toggleTransition();
+          }, 50);
+        }
+      );
     });
   };
 
@@ -126,6 +132,14 @@ export default class Home extends Component {
   render() {
     return (
       <div>
+        <div
+          style={{
+            position: "absolute",
+            zIndex: "100"
+          }}
+        >
+          <Button color="light" onClick={() => this.props.link("Settings")}>Settings</Button>
+        </div>
         <div>
           {this.state.isGameStarted ? (
             <Game
