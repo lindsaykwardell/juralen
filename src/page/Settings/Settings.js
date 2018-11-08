@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Container, Row, Col} from "reactstrap";
+import {Container, Row, Col, Button} from "reactstrap";
 
 export default class Settings extends Component {
   render() {
@@ -14,6 +14,7 @@ export default class Settings extends Component {
           <Col>Sound Effects</Col>
           <Col>Setting goes here</Col>
         </Row>
+        <Button color="light" onClick={() => this.props.link("Home")}>Return Home</Button>
       </Container>
     )
   }
