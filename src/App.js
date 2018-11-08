@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import Frame from "./components/Frame/Frame";
+import Frame from "./containers/Frame/Frame";
 
 class App extends Component {
   render() {

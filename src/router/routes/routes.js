@@ -23,7 +23,7 @@ export default {
       return true;
     },
     beforeLeave: () => {
-      alert("Have a good one!");
+      console.log("Leaving settings");
       return true;
     }
   }

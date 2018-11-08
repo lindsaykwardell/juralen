@@ -100,11 +100,11 @@ export default props => {
                 </FormGroup>
                 {props.gameMode === "online" ? (
                   <FormGroup>
-                    <Label for="playerName">Game Name</Label>
+                    <Label for="gameName">Game Name</Label>
                     <Input
-                      id="playerName"
+                      id="gameName"
                       type="text"
-                      value={props.playerName}
+                      value={props.gameName}
                       onChange={props.updateName}
                     />
                   </FormGroup>

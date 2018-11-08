@@ -12,9 +12,9 @@ import celticWarrior from "../../audio/celtic-warrior.mp3";
 export default class Home extends Component {
   constructor() {
     super();
-    const defaultName = localStorage.getItem("PlayerName") || "New Game";
+    const defaultName = localStorage.getItem("GameName") || "New Game";
     this.state = {
-      playerName: defaultName,
+      gameName: defaultName,
       gridSize: "9",
       gameMode: "hotseat",
       hostingGame: false,
@@ -113,8 +113,8 @@ export default class Home extends Component {
   };
 
   updateNameHandler = e => {
-    this.setState({ playerName: e.target.value });
-    localStorage.setItem("PlayerName", e.target.value);
+    this.setState({ gameName: e.target.value });
+    localStorage.setItem("GameName", e.target.value);
   };
 
   updateGridSizeHandler = e => {
@@ -145,7 +145,7 @@ export default class Home extends Component {
             <Game
               gameMode={this.state.gameMode}
               hostingGame={this.state.hostingGame}
-              gameName={this.state.playerName}
+              gameName={this.state.gameName}
               selectedGame={this.state.selectedGame}
               gridSize={this.state.gridSize}
               usingSavedGame={this.state.usingSavedGame}
@@ -156,7 +156,7 @@ export default class Home extends Component {
               availableGames={this.state.availableGames}
               selectedGame={this.state.selectedGame}
               selectGame={this.selectGameHandler}
-              playerName={this.state.playerName}
+              gameName={this.state.gameName}
               gameMode={this.state.gameMode}
               gridSize={this.state.gridSize}
               menuOption={this.state.menuOption}
