@@ -1,9 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
+
+import Router from "../../router/Router";
+import routes from "../../router/routes/routes";
 
 export default class Frame extends Component {
   state = {
     activeTransition: false
-  }
+  };
 
   toggleTransitionHandler = () => {
     return new Promise(resolve => {
@@ -11,8 +14,8 @@ export default class Frame extends Component {
       setTimeout(() => {
         resolve();
       }, 500);
-    })
-  }
+    });
+  };
 
   render() {
     const frame = {
@@ -27,8 +30,14 @@ export default class Frame extends Component {
 
     return (
       <div style={frame}>
-        {React.cloneElement(this.props.children, {toggleTransition: this.toggleTransitionHandler})}
+        <Router
+          routes={routes}
+          beforeOpenRoute={this.toggleTransitionHandler}
+          afterOpenRoute={this.toggleTransitionHandler}
+          toggleTransition={this.toggleTransitionHandler}
+        />
+        {/*React.cloneElement(this.props.children, {toggleTransition: this.toggleTransitionHandler})*/}
       </div>
-    )
+    );
   }
 }

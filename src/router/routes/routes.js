@@ -6,7 +6,7 @@ import Settings from "../../page/Settings/Settings";
 // Returning false cancels the route.
 
 // Returning false (or 0, etc) on beforeLeave will cancel the route
-// but any other value will be ignored and treated as true
+// but any other value will be ignored and treated as true  
 
 export default {
   Home: {

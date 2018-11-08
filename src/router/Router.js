@@ -8,13 +8,13 @@ export default class Router extends Component {
 
   beforeLeaveHandler = () => {
     return new Promise((resolve, reject) => {
-      try {
-        if (this.props.routes[this.state.openPage].beforeLeave()) {
-          resolve();
-        } else {
+      if (this.props.routes[this.state.openPage].beforeLeave !== undefined) {
+        const res = this.props.routes[this.state.openPage].beforeLeave();
+        if (res === false) {
           reject();
         }
-      } catch (err) {
+        resolve();
+      } else {
         resolve();
       }
     });
@@ -22,14 +22,13 @@ export default class Router extends Component {
 
   beforeEnterHandler = target => {
     return new Promise((resolve, reject) => {
-      try {
-        if (this.props.routes[target].beforeEnter()) {
-          const res = this.props.routes[target].beforeEnter();
-          resolve(res);
-        } else {
+      if (this.props.routes[target].beforeEnter !== undefined) {
+        const res = this.props.routes[target].beforeEnter();
+        if (res === false) {
           reject();
         }
-      } catch (err) {
+        resolve(res);
+      } else {
         resolve();
       }
     });
@@ -41,14 +40,18 @@ export default class Router extends Component {
         return this.beforeEnterHandler(target);
       })
       .then(updatedTarget => {
-        if (updatedTarget !== true) {
+        if (updatedTarget !== undefined && updatedTarget !== true) {
           target = updatedTarget;
         }
-        return this.props.toggleTransition();
+        if (this.props.beforeOpenRoute !== undefined) {
+          return this.props.beforeOpenRoute();
+        } else return true;
       })
       .then(() => {
         this.setState({ openPage: target, prevProps }, () => {
-          this.props.toggleTransition();
+          if (this.props.afterOpenRoute !== undefined) {
+            this.props.afterOpenRoute();
+          }
         });
       })
       .catch(err => {
