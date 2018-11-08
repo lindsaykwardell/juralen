@@ -1,18 +1,15 @@
 import React, { Component } from "react";
 
-import routes from "./routes/routes";
-
 export default class Router extends Component {
   state = {
     openPage: "Home",
-    prevProps: null,
-    routes
+    prevProps: null
   };
 
   beforeLeaveHandler = () => {
     return new Promise((resolve, reject) => {
       try {
-        if (routes[this.state.openPage].beforeLeave()) {
+        if (this.props.routes[this.state.openPage].beforeLeave()) {
           resolve();
         } else {
           reject();
@@ -26,8 +23,9 @@ export default class Router extends Component {
   beforeEnterHandler = target => {
     return new Promise((resolve, reject) => {
       try {
-        if (routes[target].beforeEnter()) {
-          resolve();
+        if (this.props.routes[target].beforeEnter()) {
+          const res = this.props.routes[target].beforeEnter();
+          resolve(res);
         } else {
           reject();
         }
@@ -40,10 +38,13 @@ export default class Router extends Component {
   link = (target, prevProps) => {
     this.beforeLeaveHandler()
       .then(() => {
-        return this.props.toggleTransition();
-      })
-      .then(() => {
         return this.beforeEnterHandler(target);
+      })
+      .then(updatedTarget => {
+        if (updatedTarget !== true) {
+          target = updatedTarget;
+        }
+        return this.props.toggleTransition();
       })
       .then(() => {
         this.setState({ openPage: target, prevProps }, () => {
@@ -56,7 +57,7 @@ export default class Router extends Component {
   };
 
   render() {
-    const OpenPage = routes[this.state.openPage];
+    const OpenPage = this.props.routes[this.state.openPage];
 
     return (
       <OpenPage.component
