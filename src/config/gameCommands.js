@@ -1,6 +1,6 @@
-import Cell from "../../../../models/Cell/Cell";
+import Cell from "../models/Cell/Cell";
 //import Unit from "../../../../models/Units/Unit";
-import * as Clone from "../../../../utility/clone";
+import * as Clone from "../utility/clone";
 
 //import isElectron from "../../../../config/isElectron";
 
@@ -24,8 +24,8 @@ export const loadGame = state => {
   return { ...state, grid, openCell };
 };
 
-export const newTurn = (state, gridSize, endGame, gameMode) => {
-  return new Promise(resolve => {
+export const newTurn = (state, gridSize, gameMode) => {
+  return new Promise((resolve, reject) => {
     const resources = Clone.Resources(state.resources);
     let me = state.me;
     let notMe = state.notMe;
@@ -50,7 +50,7 @@ export const newTurn = (state, gridSize, endGame, gameMode) => {
     ) {
       alert(`${notMe} has won the game!`);
       localStorage.removeItem("savedGame");
-      endGame();
+      reject();
     }
     // Gain resources
     // Actions are capped at 8

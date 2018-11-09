@@ -1,19 +1,19 @@
 import React from "react";
-import Square from "./Square/Square";
+import Square from "../Square/Square";
 
-import castle from "../../../../img/castle.png";
-import town from "../../../../img/town.jpg";
-import forest from "../../../../img/forest.png";
-import mountain from "../../../../img/mountain.png";
+import castle from "../../img/castle.png";
+import town from "../../img/town.jpg";
+import forest from "../../img/forest.png";
+import mountain from "../../img/mountain.png";
 
-import soldier from "../../../../img/soldier.png";
-import soldiers from "../../../../img/soldiers.png";
+import soldier from "../../img/soldier.png";
+import soldiers from "../../img/soldiers.png";
 
-import knight from "../../../../img/knight.png";
-import assassin from "../../../../img/assassin.jpg";
-import archer from "../../../../img/archer.jpg";
-import wizard from "../../../../img/wizard.png";
-import priest from "../../../../img/priest.jpg";
+import knight from "../../img/knight.png";
+import assassin from "../../img/assassin.jpg";
+import archer from "../../img/archer.jpg";
+import wizard from "../../img/wizard.png";
+import priest from "../../img/priest.jpg";
 
 import classes from "./Board.module.css";
 

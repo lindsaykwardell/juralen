@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class Router extends Component {
   state = {
-    openPage: "Home",
+    openPage: "Lobby",
     prevProps: null
   };
 
