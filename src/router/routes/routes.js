@@ -1,3 +1,5 @@
+import Splash from "../../components/Splash/Splash";
+import Login from "../../containers/Login/Login";
 import Lobby from "../../containers/Lobby/Lobby";
 import Game from "../../containers/Game/Game";
 import Settings from "../../containers/Settings/Settings";
@@ -10,6 +12,12 @@ import Settings from "../../containers/Settings/Settings";
 // but any other value will be ignored and treated as true
 
 export default {
+  Splash: {
+    component: Splash
+  },
+  Login: {
+    component: Login
+  },
   Lobby: {
     component: Lobby
   },

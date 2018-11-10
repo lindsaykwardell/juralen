@@ -1,10 +1,26 @@
 import React, { Component } from "react";
+import firebase from "../config/db/firebase";
 
 export default class Router extends Component {
-  state = {
-    openPage: "Lobby",
-    prevProps: null
-  };
+  constructor() {
+    super();
+
+    this.state = {
+      openPage: "Splash",
+      prevProps: null
+    };
+
+    setTimeout(() => {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          console.log(user);
+          this.link("Lobby");
+        } else {
+          this.link("Login");
+        }
+      });
+    }, 2000);
+  }
 
   beforeLeaveHandler = () => {
     return new Promise((resolve, reject) => {

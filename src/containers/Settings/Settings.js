@@ -3,6 +3,10 @@ import { connect } from "react-redux";
 import { Container, Row, Col, Button, Input } from "reactstrap";
 
 class Settings extends Component {
+  onNameChange = e => {
+    
+  }
+
   render() {
     return (
       <Container style={{color: "white"}}>
@@ -21,7 +25,7 @@ class Settings extends Component {
           <Col>Sound Effects</Col>
           <Col>Setting goes here</Col>
         </Row>
-        <Button color="light" onClick={() => this.props.link("Home")}>
+        <Button color="light" onClick={() => this.props.link("Lobby")}>
           Return Home
         </Button>
       </Container>

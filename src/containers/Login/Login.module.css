@@ -1,0 +1,27 @@
+.login {
+  color: white;
+}
+
+.login h1 {
+  font-family: "Stoke", serif;
+}
+
+.bullseye {
+  margin-top: 30vh;
+}
+
+.box {
+  margin: 50px auto;
+  padding: 15px;
+  border: 1px solid white;
+  border-radius: 0.25rem;
+  width: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 30px #555;
+}
+
+@media all and (max-width: 768px) {
+  .bullseye {
+    margin-top: 15px;
+  }
+}

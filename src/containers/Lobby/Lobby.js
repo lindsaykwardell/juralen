@@ -45,6 +45,8 @@ export default connect(
     constructor() {
       super();
 
+      console.log(firebase.auth().currentUser);
+
       this.state = {
         availableGames: [],
         selectedGame: "",
@@ -101,7 +103,6 @@ export default connect(
         this.props.hostGame(null);
         this.props.link("Game");
       }
-      
     };
 
     joinGameHandler = () => {
@@ -121,6 +122,10 @@ export default connect(
             this.props.link("Game");
           });
       }
+    };
+
+    onLogoutHandler = () => {
+      firebase.auth().signOut();
     };
 
     render() {
@@ -162,11 +167,35 @@ export default connect(
               overflow: "hidden"
             }}
           >
-            <Container className="mt-5">
+            <div
+              style={{
+                color: "white",
+                position: "absolute",
+                top: "15px",
+                right: "15px"
+              }}
+            >
+              {firebase.auth().currentUser.displayName}
+              <Button
+                className="ml-3"
+                color="light"
+                onClick={() => this.props.link("Settings")}
+              >
+                Settings
+              </Button>
+              <Button
+                className="ml-3"
+                color="dark"
+                onClick={this.onLogoutHandler}
+              >
+                Log Out
+              </Button>
+            </div>
+            <Container style={{marginTop: "60px"}}>
               <Row>
                 <Col
                   className={
-                    this.props.menuOption === "new" ? "" : classes.inactive
+                    this.state.menuOption === "new" ? "" : classes.inactive
                   }
                 >
                   <Button
@@ -183,7 +212,7 @@ export default connect(
                 </Col>
                 <Col
                   className={
-                    this.props.menuOption === "join" ? "" : classes.inactive
+                    this.state.menuOption === "join" ? "" : classes.inactive
                   }
                 >
                   <Button
@@ -200,7 +229,7 @@ export default connect(
               <Row>
                 <Col
                   className={
-                    this.props.menuOption === "new" ? "" : classes.inactive
+                    this.state.menuOption === "new" ? "" : classes.inactive
                   }
                 >
                   <div className={classes.box}>
@@ -250,7 +279,7 @@ export default connect(
                 </Col>
                 <Col
                   className={
-                    this.props.menuOption === "join" ? "" : classes.inactive
+                    this.state.menuOption === "join" ? "" : classes.inactive
                   }
                 >
                   <div className={classes.box}>

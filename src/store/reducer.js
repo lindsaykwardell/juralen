@@ -1,3 +1,5 @@
+import firebase from "../config/db/firebase"
+
 const initialState = {
   playerName: localStorage.getItem("PlayerName") || "New Player",
   gameName: localStorage.getItem("GameName") || "Warlord's Feud",
@@ -11,6 +13,7 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "UPDATE_PLAYER_NAME":
+      firebase.auth().currentUser.updateProfile({ displayName: action.value })
       localStorage.setItem("PlayerName", action.value);
       return {
         ...state,
