@@ -45,8 +45,6 @@ export default connect(
     constructor() {
       super();
 
-      console.log(firebase.auth().currentUser);
-
       this.state = {
         availableGames: [],
         selectedGame: "",

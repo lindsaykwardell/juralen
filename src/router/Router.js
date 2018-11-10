@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import firebase from "../config/db/firebase";
+import audioControl from "../config/audioControl";
 
 export default class Router extends Component {
   constructor() {
     super();
+
+    audioControl.selectSong("theme:0");
+    audioControl.fadeIn();
 
     this.state = {
       openPage: "Splash",
@@ -13,7 +17,6 @@ export default class Router extends Component {
     setTimeout(() => {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          console.log(user);
           this.link("Lobby");
         } else {
           this.link("Login");

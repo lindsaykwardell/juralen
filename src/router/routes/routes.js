@@ -4,6 +4,8 @@ import Lobby from "../../containers/Lobby/Lobby";
 import Game from "../../containers/Game/Game";
 import Settings from "../../containers/Settings/Settings";
 
+import audioControl from "../../config/audioControl";
+
 // beforeEnter MUST return true to go to the route.
 // Any other return value will redirect to a different page.
 // Returning false cancels the route.
@@ -16,13 +18,27 @@ export default {
     component: Splash
   },
   Login: {
-    component: Login
+    component: Login,
   },
   Lobby: {
     component: Lobby
   },
   Game: {
-    component: Game
+    component: Game,
+    beforeEnter: () => {
+      audioControl.fadeOut().then(() => {
+        audioControl.maxVol = 0.4;
+        audioControl.shuffleAlbum("inGame");
+      });
+    },
+    beforeLeave: () => {
+      audioControl.fadeOut().then(() => {
+        audioControl.stopShuffle();
+        audioControl.selectSong("theme:0");
+        audioControl.maxVol = 1;
+        audioControl.fadeIn();
+      })
+    }
   },
   Settings: {
     component: Settings

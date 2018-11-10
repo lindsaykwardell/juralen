@@ -28,23 +28,23 @@ import {
 
 import * as Clone from "../../utility/clone";
 
-import anInnocentSword from "../../audio/an-innocent-sword.mp3";
-import crusadeOfTheCastellan from "../../audio/crusade-of-the-castellan.mp3";
-import guardians from "../../audio/guardians.mp3";
-import landOfAFolkDivided from "../../audio/land-of-a-folk-divided.mp3";
-import rememberTheWay from "../../audio/remember-the-way.mp3";
-import streetsOfSantIvo from "../../audio/streets-of-santivo.mp3";
+// import anInnocentSword from "../../audio/an-innocent-sword.mp3";
+// import crusadeOfTheCastellan from "../../audio/crusade-of-the-castellan.mp3";
+// import guardians from "../../audio/guardians.mp3";
+// import landOfAFolkDivided from "../../audio/land-of-a-folk-divided.mp3";
+// import rememberTheWay from "../../audio/remember-the-way.mp3";
+// import streetsOfSantIvo from "../../audio/streets-of-santivo.mp3";
 
 import classes from "./Game.module.css";
 
-const soundtrack = [
-  anInnocentSword,
-  crusadeOfTheCastellan,
-  guardians,
-  landOfAFolkDivided,
-  rememberTheWay,
-  streetsOfSantIvo
-];
+// const soundtrack = [
+//   anInnocentSword,
+//   crusadeOfTheCastellan,
+//   guardians,
+//   landOfAFolkDivided,
+//   rememberTheWay,
+//   streetsOfSantIvo
+// ];
 
 const initialGameState = {
   resources: {
@@ -176,13 +176,13 @@ export default connect(
     }
 
     startAudio = () => {
-      const track = Math.floor(Math.random() * soundtrack.length - 1);
-      const audio = new Audio();
-      audio.src = soundtrack[track];
-      this.setState({ audio }, () => {
-        this.state.audio.play();
-        this.state.audio.addEventListener("ended", this.startAudio);
-      });
+      // const track = Math.floor(Math.random() * soundtrack.length - 1);
+      // const audio = new Audio();
+      // audio.src = soundtrack[track];
+      // this.setState({ audio }, () => {
+      //   this.state.audio.play();
+      //   this.state.audio.addEventListener("ended", this.startAudio);
+      // });
     };
 
     messageInputHandler = e => {
