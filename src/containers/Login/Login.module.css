@@ -24,4 +24,8 @@
   .bullseye {
     margin-top: 15px;
   }
+
+  .box {
+    width: 80%;
+  }
 }

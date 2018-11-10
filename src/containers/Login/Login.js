@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Container, Input, FormGroup, Label, Button } from "reactstrap";
+import {
+  Container,
+  Input,
+  FormGroup,
+  Label,
+  Button,
+  Row,
+  Col
+} from "reactstrap";
 import firebase from "../../config/db/firebase";
 import classes from "./Login.module.css";
 
@@ -40,7 +48,7 @@ export default class Login extends Component {
 
         user.updateProfile({
           displayName: "Lord Knave"
-        })
+        });
       })
       .catch(error => {
         this.setState({ error });
@@ -69,27 +77,23 @@ export default class Login extends Component {
                 onChange={this.enterPasswordHandler}
               />
             </FormGroup>
-            <div className="text-center">
-              <Button
-                color="primary"
-                className="mr-4"
-                onClick={this.onLoginHandler}
-              >
-                Sign In
-              </Button>
-              <Button
-                color="success"
-                className="ml-4"
-                onClick={this.onRegisterHandler}
-              >
-                Register
-              </Button>
+            <Row>
+              <Col xs="12" md="6" className="mt-2">
+                <Button color="primary" style={{width: "100%"}} onClick={this.onLoginHandler}>
+                  Sign In
+                </Button>
+              </Col>
+              <Col xs="12" md="6" className="mt-2">
+                <Button color="success" style={{width: "100%"}} onClick={this.onRegisterHandler}>
+                  Register
+                </Button>
+              </Col>
               <div className="text-danger">
                 {this.state.error
                   ? `${this.state.error.code}: ${this.state.error.message}`
                   : ""}
               </div>
-            </div>
+            </Row>
           </div>
         </Container>
       </div>
