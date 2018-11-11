@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Button } from "reactstrap";
 import firebase from "../../config/db/firebase";
-import isElectron from "../../config/isElectron";
 
 import Board from "../../components/Board/Board";
 import Scoreboard from "../../components/Scoreboard/Scoreboard";
@@ -27,24 +26,9 @@ import {
 } from "../../config/gameCommands";
 
 import * as Clone from "../../utility/clone";
-
-// import anInnocentSword from "../../audio/an-innocent-sword.mp3";
-// import crusadeOfTheCastellan from "../../audio/crusade-of-the-castellan.mp3";
-// import guardians from "../../audio/guardians.mp3";
-// import landOfAFolkDivided from "../../audio/land-of-a-folk-divided.mp3";
-// import rememberTheWay from "../../audio/remember-the-way.mp3";
-// import streetsOfSantIvo from "../../audio/streets-of-santivo.mp3";
+import {analyzeMoves} from "../../utility/analyze";
 
 import classes from "./Game.module.css";
-
-// const soundtrack = [
-//   anInnocentSword,
-//   crusadeOfTheCastellan,
-//   guardians,
-//   landOfAFolkDivided,
-//   rememberTheWay,
-//   streetsOfSantIvo
-// ];
 
 const initialGameState = {
   resources: {
@@ -59,8 +43,7 @@ const initialGameState = {
   moveCost: 0,
   gameLog: [],
   message: "",
-  activeData: "commands",
-  audio: new Audio()
+  activeData: "commands"
 };
 
 const mapStateToProps = state => {
@@ -122,13 +105,10 @@ export default connect(
           gameID: props.selectedGame
         };
       }
+      console.log(analyzeMoves(this.state));
     }
 
     componentDidMount() {
-      if (isElectron) {
-        this.startAudio();
-      }
-
       if (this.props.gameMode === "online") {
         if (this.props.hostingGame) {
           firebase
@@ -175,16 +155,6 @@ export default connect(
       }
     }
 
-    startAudio = () => {
-      // const track = Math.floor(Math.random() * soundtrack.length - 1);
-      // const audio = new Audio();
-      // audio.src = soundtrack[track];
-      // this.setState({ audio }, () => {
-      //   this.state.audio.play();
-      //   this.state.audio.addEventListener("ended", this.startAudio);
-      // });
-    };
-
     messageInputHandler = e => {
       this.setState({ message: e.target.value });
     };
@@ -213,6 +183,7 @@ export default connect(
     displayGridElementHandler = cell => {
       openSelectedCell(this.state, cell).then(res => {
         this.setState({ ...res }, () => {
+          console.log(analyzeMoves(this.state));
           if (this.state.gameID) {
             firebase
               .firestore()
@@ -235,6 +206,7 @@ export default connect(
       buildNewUnit(this.state, unit, cell)
         .then(res => {
           this.setState({ ...res }, () => {
+            console.log(analyzeMoves(this.state));
             if (this.state.gameID) {
               firebase
                 .firestore()
@@ -289,6 +261,7 @@ export default connect(
       fortifyStructure(this.state, cell)
         .then(res => {
           this.setState({ ...res }, () => {
+            console.log(analyzeMoves(this.state));
             if (this.state.gameID) {
               firebase
                 .firestore()
@@ -314,6 +287,7 @@ export default connect(
       upgradeStructure(this.state, cell)
         .then(res => {
           this.setState({ ...res }, () => {
+            console.log(analyzeMoves(this.state));
             if (this.state.gameID) {
               firebase
                 .firestore()
@@ -343,6 +317,7 @@ export default connect(
         newTurn(this.state, this.props.gridSize, this.props.gameMode)
           .then(res => {
             this.setState({ ...res }, () => {
+              console.log(analyzeMoves(this.state));
               if (this.state.gameID) {
                 firebase
                   .firestore()
@@ -369,7 +344,6 @@ export default connect(
     };
 
     endGameHandler = () => {
-      this.state.audio.pause();
       if (this.props.gameMode === "online") {
         this.listener();
         if (this.state.gameID) {
