@@ -3,10 +3,6 @@ import { connect } from "react-redux";
 import { Container, Row, Col, Button, Input } from "reactstrap";
 
 class Settings extends Component {
-  onNameChange = e => {
-    
-  }
-
   render() {
     return (
       <Container style={{color: "white"}}>

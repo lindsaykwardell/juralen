@@ -1,22 +1,20 @@
 .cell {
+  position: relative;
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;
   /* width: 100px; */
-  height: 100px;
+  /* height: 100px; */
 }
 
-@media all and (max-width: 768px) {
-  .cell {
-    /* width: 43px; */
-    height: 80px;
-    /* height: 43px; */
-  }
+.cell:after {
+  content: '';
+  display: block;
+  margin-top: 100%;
 }
 
-@media all and (max-width: 500px) {
-  .cell {
-    /* width: 43px; */
-    height: 43px;
-  }
+.cell div {
+  position: absolute;
+  top: 0;
+  right: 0;
 }

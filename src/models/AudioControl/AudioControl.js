@@ -74,6 +74,7 @@ export default class AudioControl {
   };
 
   fadeIn = () => {
+    this.audio.volume = 0;
     this.play();
     const fadeAudio = setInterval(() => {
       if (this.audio.volume < this.maxVol && this.audio.volume + 0.05 <= 1) {

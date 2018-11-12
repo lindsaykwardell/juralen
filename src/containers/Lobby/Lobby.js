@@ -272,6 +272,9 @@ export default connect(
                         <option value="5">5 x 5</option>
                         <option value="7">7 x 7</option>
                         <option value="9">9 x 9</option>
+                        <option value="11">11 x 11</option>
+                        <option value="13">13 x 13</option>
+                        <option value="15">15 x 15</option>
                       </Input>
                     </FormGroup>
                   </div>

@@ -37,11 +37,9 @@ export default Radium(props => {
     ":hover": { opacity: cellIsInRange ? ".9" : "1" }
   };
 
-  return (
-    <td style={aboveCell}>
+  return <td style={aboveCell}>
       <div className={classes.cell} style={cell} onClick={() => props.onClick(props.cellData)}>
-        {props.children}
+        <div>{props.children}</div>
       </div>
-    </td>
-  );
+    </td>;
 });

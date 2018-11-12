@@ -5,7 +5,8 @@ let isElectron = false;
 var userAgent = navigator.userAgent.toLowerCase();
 if (
   userAgent.indexOf(" electron/") > -1 ||
-  process.env.NODE_ENV === "development"
+  process.env.NODE_ENV === "development" ||
+  true
 ) {
   // Electron-specific code
   isElectron = true;

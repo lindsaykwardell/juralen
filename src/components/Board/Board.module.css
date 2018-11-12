@@ -10,11 +10,11 @@
 }
 
 .structure {
-  width: 65px;
+  width: 65%;
 }
 
 .unit {
-  width: 10px;
+  width: 12.5%;
 }
 
 @media all and (max-width: 768px) {
@@ -26,9 +26,9 @@
     width: 50%;
   }
 
-  .unit {
+  /* .unit {
     width: 5px;
     position: relative;
     top: -3px;
-  }
+  } */
 }
