@@ -29,11 +29,10 @@ export const analyzeMoves = state => {
   
 
   results.sort((a, b) => {
+    
     let scorea = scoreMove(grid, resources, me, notMe, a);
     let scoreb = scoreMove(grid, resources, me, notMe, b);
 
-    if (scorea > scoreb) return -1;
-    if (scoreb < scorea) return 1;
     if (scorea === scoreb) {
       // Check proximity to enemy
 
@@ -43,13 +42,11 @@ export const analyzeMoves = state => {
         if (adiff > bdiff) scoreb++;
         if (adiff < bdiff) scorea++;
       });
-      if (scorea > scoreb) return -1;
-      if (scoreb < scorea) return 1;
     }
-    return 0;
+    return scoreb - scorea;
   });
   
-
+  
   return results;
 };
 
@@ -230,6 +227,7 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
       }
     });
   });
+  
   return results;
 }
 
@@ -308,7 +306,7 @@ const scoreMove = (grid, resources, me, notMe, a) => {
       });
     });
   }
-
+  
   return scorea;
 };
 
