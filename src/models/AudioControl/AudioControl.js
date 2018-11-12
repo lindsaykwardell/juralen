@@ -43,7 +43,6 @@ export default class AudioControl {
       track = Math.floor(
         Math.random() * (this.music[this.shuffle].length)
       );
-      console.log(track);
     }
     this.audio.src = this.music[this.shuffle][track];
     this.fadeIn();

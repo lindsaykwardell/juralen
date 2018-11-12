@@ -244,6 +244,7 @@ export default connect(
                       >
                         <option value="hotseat">Hotseat</option>
                         <option value="online">Online</option>
+                        <option value="computer">Vs. AI</option>
                       </Input>
                     </FormGroup>
                     {this.props.gameMode === "online" ? (

@@ -26,7 +26,7 @@ import {
 } from "../../config/gameCommands";
 
 import * as Clone from "../../utility/clone";
-import {analyzeMoves} from "../../utility/analyze";
+import { analyzeMoves } from "../../utility/analyze";
 
 import classes from "./Game.module.css";
 
@@ -71,7 +71,7 @@ export default connect(
     constructor(props) {
       super(props);
 
-      if (props.gameMode === "hotseat") {
+      if (props.gameMode === "hotseat" || props.gameMode === "computer") {
         if (props.usingSavedGame) {
           this.state = loadGame(JSON.parse(localStorage.getItem("savedGame")));
         } else {
@@ -105,7 +105,6 @@ export default connect(
           gameID: props.selectedGame
         };
       }
-      console.log(analyzeMoves(this.state));
     }
 
     componentDidMount() {
@@ -183,7 +182,6 @@ export default connect(
     displayGridElementHandler = cell => {
       openSelectedCell(this.state, cell).then(res => {
         this.setState({ ...res }, () => {
-          console.log(analyzeMoves(this.state));
           if (this.state.gameID) {
             firebase
               .firestore()
@@ -206,7 +204,6 @@ export default connect(
       buildNewUnit(this.state, unit, cell)
         .then(res => {
           this.setState({ ...res }, () => {
-            console.log(analyzeMoves(this.state));
             if (this.state.gameID) {
               firebase
                 .firestore()
@@ -261,7 +258,6 @@ export default connect(
       fortifyStructure(this.state, cell)
         .then(res => {
           this.setState({ ...res }, () => {
-            console.log(analyzeMoves(this.state));
             if (this.state.gameID) {
               firebase
                 .firestore()
@@ -287,7 +283,6 @@ export default connect(
       upgradeStructure(this.state, cell)
         .then(res => {
           this.setState({ ...res }, () => {
-            console.log(analyzeMoves(this.state));
             if (this.state.gameID) {
               firebase
                 .firestore()
@@ -317,7 +312,10 @@ export default connect(
         newTurn(this.state, this.props.gridSize, this.props.gameMode)
           .then(res => {
             this.setState({ ...res }, () => {
-              console.log(analyzeMoves(this.state));
+              if (this.props.gameMode === "computer" && res.me === "Player2") {
+              //if (this.props.gameMode === "computer") {
+                this.runComputerTurn();
+              }
               if (this.state.gameID) {
                 firebase
                   .firestore()
@@ -341,6 +339,63 @@ export default connect(
             this.props.link("Lobby");
           });
       });
+    };
+
+    runComputerTurn = () => {
+      let prevOption = {};
+      const runningTurn = setInterval(() => {
+        const options = analyzeMoves(this.state);
+        
+        if (options.length > 0) {
+          if (JSON.stringify(prevOption) === JSON.stringify(options[0])) {
+            
+            clearInterval(runningTurn);
+            this.newTurnHandler();
+          } else {
+            prevOption = options[0];
+            
+            const s = options[0];
+            if (s.action.includes("build")) {
+              const option = s.action.split(":");
+              this.displayGridElementHandler(this.state.grid[s.y][s.x]);
+              
+              this.buildUnitHandler(
+                Units[option[1]],
+                this.state.grid[s.y][s.x]
+              );
+            }
+            if (s.action.includes("fortify")) {
+              this.fortifyStructureHandler(this.state.grid[s.y][s.x]);
+            }
+            if (s.action.includes("upgrade")) {
+              //const option = s.action.split(":");
+              this.upgradeStructureHandler(this.state.grid[s.y][s.x]);
+            }
+            if (s.action.includes("move") || s.action.includes("attack")) {
+              let moveCost = 0;
+              s.units.forEach(unit => {
+                moveCost += unit.move;
+              });
+              this.setState(
+                {
+                  openCell: Clone.Cell(this.state.grid[s.y][s.x]),
+                  moveCost,
+                  movingSelectedUnits: true,
+                  selectedUnits: [...s.id]
+                },
+                () => {
+                  this.displayGridElementHandler(
+                    this.state.grid[s.coords[1]][s.coords[0]]
+                  );
+                }
+              );
+            }
+          }
+        } else {
+          clearInterval(runningTurn);
+          this.newTurnHandler();
+        }
+      }, 500);
     };
 
     endGameHandler = () => {
@@ -421,6 +476,7 @@ export default connect(
               me={this.state.me}
               notMe={this.state.notMe}
               currentTurn={this.state.currentTurn}
+              gameMode={this.props.gameMode}
               openCell={this.state.openCell}
               units={Units}
               buildUnit={this.buildUnitHandler}

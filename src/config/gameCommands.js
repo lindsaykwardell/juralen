@@ -30,35 +30,36 @@ export const newTurn = (state, gridSize, gameMode) => {
     let me = state.me;
     let notMe = state.notMe;
     let currentTurn = notMe;
-    if (gameMode !== "online") {
-      me = state.notMe;
-      notMe = state.me;
-    }
-
+    
     let gridControlCount = 0;
     // Check if notMe won last turn
     // Win cons: control half the board
     // or opponent controls no towns.
     state.grid.forEach(row => {
       row.forEach(cell => {
-        if (cell.controlledBy === notMe) gridControlCount++;
+        if (cell.controlledBy === me) gridControlCount++;
       });
     });
     if (
-      resources[me].towns === 0 ||
+      resources[notMe].towns === 0 ||
       gridControlCount === (gridSize * gridSize) / 2
     ) {
-      alert(`${notMe} has won the game!`);
+      alert(`${me} has won the game!`);
       localStorage.removeItem("savedGame");
       reject();
     }
     // Gain resources
     // Actions are capped at 8
     // Gold capped at 10
-    resources[me].actions = 3 + resources[me].towns;
-    if (resources[me].actions > 8) resources[me].actions = 8;
-    resources[me].gold += resources[me].farms;
-    if (resources[me].gold > 10) resources[me].gold = 10;
+    resources[notMe].actions = 3 + resources[notMe].towns;
+    if (resources[notMe].actions > 8) resources[notMe].actions = 8;
+    resources[notMe].gold += resources[notMe].farms;
+    if (resources[notMe].gold > 10) resources[notMe].gold = 10;
+
+    if (gameMode !== "online") {
+      me = state.notMe;
+      notMe = state.me;
+    }
 
     // Return
     resolve({ resources, me, notMe, currentTurn });

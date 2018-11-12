@@ -105,20 +105,16 @@ export default props => {
               );
             }
             if (unit.name === "Assassin") {
-              if (props.gameMode === "hotseat" && cell.terrain !== "Forest") {
-                return (
-                  <img
-                    key={unit.ID}
-                    src={assassin}
-                    alt="Assassin"
-                    className={classes.unit}
-                  />
-                );
-              }
               if (
-                props.gameMode === "online" &&
-                (cell.terrain !== "Forest" ||
-                  (cell.terrain === "Forest" && unit.controlledBy === props.me))
+                (props.gameMode === "hotseat" && cell.terrain !== "Forest") ||
+                (props.gameMode === "online" &&
+                  (cell.terrain !== "Forest" ||
+                    (cell.terrain === "Forest" &&
+                      unit.controlledBy === props.me))) ||
+                (props.gameMode === "computer" &&
+                  (cell.terrain !== "Forest" ||
+                    (cell.terrain === "Forest" &&
+                      unit.controlledBy === "Player1")))
               ) {
                 return (
                   <img

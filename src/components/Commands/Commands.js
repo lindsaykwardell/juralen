@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col, Button, Label, Input, Tooltip } from "reactstrap";
+import { Row, Col, Button, Label, Input } from "reactstrap";
 
 import classes from "./Commands.module.css";
 
@@ -7,13 +7,6 @@ const Player1 = "#dc3545";
 const Player2 = "#007bff";
 
 export default class Commands extends Component {
-  state = {
-    soldierTooltip: false,
-    specialUnitTooptip: false,
-    fortifyTooltip: false,
-    upgradeTooltip: false
-  };
-
   render() {
     let buildOption = <div />;
     let upgradeOption = <div />;
@@ -39,16 +32,6 @@ export default class Commands extends Component {
           >
             Build Soldier (2)
           </Button>
-          <Tooltip
-            placement="top"
-            isOpen={this.state.soldierTooltip}
-            target="soldierButton"
-            toggle={() =>
-              this.setState({ soldierTooltip: !this.state.soldierTooltip })
-            }
-          >
-            Basic military unit. Good at defense.
-          </Tooltip>
           {this.props.openCell.specialUnit !== "None" ? (
             <span>
               <Button
@@ -66,21 +49,6 @@ export default class Commands extends Component {
                 Build {this.props.openCell.specialUnit} (
                 {new this.props.units[this.props.openCell.specialUnit]().cost})
               </Button>
-              <Tooltip
-                placement="top"
-                isOpen={this.state.specialUnitTooptip}
-                target="specialUnit"
-                toggle={() =>
-                  this.setState({
-                    specialUnitTooptip: !this.state.specialUnitTooptip
-                  })
-                }
-              >
-                {
-                  new this.props.units[this.props.openCell.specialUnit]()
-                    .description
-                }
-              </Tooltip>
             </span>
           ) : (
             ""
@@ -99,16 +67,7 @@ export default class Commands extends Component {
             >
               Fortify (3)
             </Button>
-            <Tooltip
-              placement="top"
-              isOpen={this.state.fortifyTooltip}
-              target="fortifyButton"
-              toggle={() =>
-                this.setState({ fortifyTooltip: !this.state.fortifyTooltip })
-              }
-            >
-              Increase defense bonus by 1.
-            </Tooltip>
+
             <Button
               size="sm"
               id="upgradeButton"
@@ -118,16 +77,6 @@ export default class Commands extends Component {
             >
               Upgrade to Castle (7)
             </Button>
-            <Tooltip
-              placement="top"
-              isOpen={this.state.upgradeTooltip}
-              target="upgradeButton"
-              toggle={() =>
-                this.setState({ upgradeTooltip: !this.state.upgradeTooltip })
-              }
-            >
-              Upgrade from Town to Castle. (Fortifying a castle is cheaper)
-            </Tooltip>
           </span>
         );
       }
@@ -143,16 +92,6 @@ export default class Commands extends Component {
             >
               Fortify (2)
             </Button>
-            <Tooltip
-              placement="top"
-              isOpen={this.state.fortifyTooltip}
-              target="fortifyButton"
-              toggle={() =>
-                this.setState({ fortifyTooltip: !this.state.fortifyTooltip })
-              }
-            >
-              Increase defense bonus by 1.
-            </Tooltip>
           </span>
         );
       }
@@ -212,7 +151,7 @@ export default class Commands extends Component {
               this.props.activeData !== "commands" ? classes.inactive : ""
             }
           >
-            {this.props.me === this.props.currentTurn ? (
+            {((this.props.gameMode !== "computer" && this.props.me === this.props.currentTurn) || (this.props.gameMode === "computer" && this.props.me !== "Player2") ) ? (
               <div className={classes.box}>
                 {units}
                 <hr />
