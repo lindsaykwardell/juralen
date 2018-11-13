@@ -1,0 +1,35 @@
+.mapMaker {
+  color: white;
+}
+
+.mapMaker h1 {
+  font-family: "Stoke", serif;
+}
+
+.mapMaker .devArea {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 800px minmax(400px, auto);
+  grid-template-rows: 80px 250px 100px auto;
+  grid-gap: 15px;
+}
+
+.box {
+  margin: 50px auto;
+  padding: 15px;
+  border: 1px solid white;
+  border-radius: 0.25rem;
+  width: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 30px #555;
+}
+
+@media all and (max-width: 768px) {
+  .bullseye {
+    margin-top: 15px;
+  }
+
+  .box {
+    width: 80%;
+  }
+}

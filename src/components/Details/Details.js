@@ -12,7 +12,7 @@ export default props => {
           if (
             props.openCell.terrain === "Forest" &&
             unit.name === "Assassin" &&
-            props.me !== "Player1"
+            (props.me !== "Player1" && props.me !== "Builder")
           ) {
             return "";
           }
@@ -24,7 +24,7 @@ export default props => {
           if (
             props.openCell.terrain === "Forest" &&
             unit.name === "Assassin" &&
-            props.me !== "Player2"
+            (props.me !== "Player2" && props.me !== "Builder")
           ) {
             return "";
           }

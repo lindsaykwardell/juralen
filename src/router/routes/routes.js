@@ -3,6 +3,7 @@ import Login from "../../containers/Login/Login";
 import Lobby from "../../containers/Lobby/Lobby";
 import Game from "../../containers/Game/Game";
 import Settings from "../../containers/Settings/Settings";
+import MapMaker from "../../containers/MapMaker/MapMaker";
 
 import audioControl from "../../config/audioControl";
 
@@ -39,6 +40,9 @@ export default {
         audioControl.fadeIn();
       })
     }
+  },
+  MapMaker: {
+    component: MapMaker
   },
   Settings: {
     component: Settings

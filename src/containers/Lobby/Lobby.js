@@ -183,13 +183,20 @@ export default connect(
               </Button>
               <Button
                 className="ml-3"
+                color="warning"
+                onClick={() => this.props.link("MapMaker")}
+              >
+                Map Maker
+              </Button>
+              <Button
+                className="ml-3"
                 color="dark"
                 onClick={this.onLogoutHandler}
               >
                 Log Out
               </Button>
             </div>
-            <Container style={{marginTop: "60px"}}>
+            <Container style={{ marginTop: "60px" }}>
               <Row>
                 <Col
                   className={
