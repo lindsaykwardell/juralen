@@ -25,7 +25,7 @@ export default function Splash() {
           color: "white"
         }}
       >
-        <div style={{ margin: "auto", marginTop: "45vh", width: "60vw"}}>
+        <div style={{ margin: "auto", marginTop: "45vh", width: "60vw", userSelect: "none"}}>
           <hr />
           <h1
             style={{

@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { Row, Col, Button } from "reactstrap";
+import firebase from "../../config/db/firebase";
 import Board from "../../components/Board/Board";
 import Details from "../../components/Details/Details";
 import MapMakerToolbox from "../../components/MapMakerToolbox/MapMakerToolbox";
+import SaveMapModal from "./SaveMapModal/SaveMapModal";
+
 import classes from "./MapMaker.module.css";
 
 import { generateGrid, openSelectedCell } from "../../config/gameCommands";
@@ -19,6 +22,9 @@ export default class MapMaker extends Component {
     super();
     const grid = generateGrid(9);
     this.state = {
+      saveMapModal: false,
+      openMapID: null,
+      mapName: "",
       grid,
       openCell: grid[0][0],
       resources: {
@@ -29,15 +35,42 @@ export default class MapMaker extends Component {
     };
   }
 
+  initSaveMap = () => {
+    if (this.state.openMapID === null) {
+      this.toggleSaveMapModal();
+    } else {
+      this.saveMap();
+    }
+  };
+
+  saveMap = () => {
+    if (this.state.openMapID === null) {
+      firebase.firestore().collection("customMaps").add({
+        uid: firebase.auth().currentUser.uid,
+        name: this.state.mapName.length > 0 ? this.state.mapName : "New Map",
+        grid: JSON.stringify(this.state.grid),
+        resources: this.state.resources
+      }).then(docRef => {
+        this.setState({ openMapID: docRef.id, mapName: this.state.mapName.length > 0 ? this.state.mapName : "New Map"});
+      })
+    }
+  };
+
+  toggleSaveMapModal = () => {
+    this.setState({ saveMapModal: !this.state.saveMapModal });
+  };
+
+  updateMapNameHandler = e => {
+    this.setState({ mapName: e.target.value });
+  };
+
   generateNewGrid = () => {
     const grid = generateGrid(9);
     this.setState({
       grid,
-      openCell: Clone.Cell(
-        grid[this.state.openCell.y][this.state.openCell.x]
-      )
+      openCell: Clone.Cell(grid[this.state.openCell.y][this.state.openCell.x])
     });
-  }
+  };
 
   displayGridElementHandler = cell => {
     openSelectedCell(this.state, cell).then(res => {
@@ -108,7 +141,8 @@ export default class MapMaker extends Component {
         grid[this.state.openCell.y][this.state.openCell.x].color = Player1;
       if (player === "Player2")
         grid[this.state.openCell.y][this.state.openCell.x].color = Player2;
-      if (player === "None") grid[this.state.openCell.y][this.state.openCell.x].color = Plains;
+      if (player === "None")
+        grid[this.state.openCell.y][this.state.openCell.x].color = Plains;
     }
     this.setState({
       grid,
@@ -123,16 +157,14 @@ export default class MapMaker extends Component {
         cell.terrain = "Plains";
         cell.structure = "None";
         cell.controlledBy = "None";
-        cell.color = Plains;    
+        cell.color = Plains;
       });
     });
     this.setState({
       grid,
-      openCell: Clone.Cell(
-        grid[this.state.openCell.y][this.state.openCell.x]
-      )
+      openCell: Clone.Cell(grid[this.state.openCell.y][this.state.openCell.x])
     });
-  }
+  };
 
   clearCell = () => {
     const grid = Clone.Grid(this.state.grid);
@@ -142,26 +174,32 @@ export default class MapMaker extends Component {
     grid[this.state.openCell.y][this.state.openCell.x].color = Plains;
     this.setState({
       grid,
-      openCell: Clone.Cell(
-        grid[this.state.openCell.y][this.state.openCell.x]
-      )
+      openCell: Clone.Cell(grid[this.state.openCell.y][this.state.openCell.x])
     });
-  }
+  };
 
   render() {
     return (
       <div className={classes.mapMaker}>
         <Row>
           <Col>
-            <h1>Custom Map Maker</h1>
+            <h1 style={{ display: "inline" }}>Custom Map Maker</h1>{" "}
+            <h4 className="ml-4" style={{display: "inline"}}>{this.state.mapName}</h4>
           </Col>
-          <Col>
+          <Col className="m-1">
             <Button
               className="float-right"
               color="light"
               onClick={() => this.props.link("Lobby")}
             >
               Return to Lobby
+            </Button>
+            <Button
+              className="float-right mr-2"
+              color="success"
+              onClick={this.toggleSaveMapModal}
+            >
+              Save Map
             </Button>
           </Col>
         </Row>
@@ -191,6 +229,13 @@ export default class MapMaker extends Component {
             assignPlayer={this.assignPlayer}
           />
         </div>
+        <SaveMapModal
+          modal={this.state.saveMapModal}
+          toggle={this.toggleSaveMapModal}
+          mapName={this.state.mapName}
+          updateMapName={this.updateMapNameHandler}
+          saveMap={this.saveMap}
+        />
       </div>
     );
   }
