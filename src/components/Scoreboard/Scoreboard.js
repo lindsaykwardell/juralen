@@ -18,7 +18,7 @@ export default props => {
         </h5>
       </div>
       <div className="float-right mr-4">
-        <h5 style={{ cursor: "pointer", userSelect: "none" }} onClick={props.saveGame}>Save</h5>
+        <h5 style={{ cursor: "pointer", userSelect: "none" }} onClick={props.loadMap}>Load Custom Map</h5>
       </div>
     </div>;
 };

@@ -1,3 +1,5 @@
+import Structures from "../Structures/Structures";
+
 const Player1 = "#dc3545";
 const Player2 = "#007bff";
 const Plains = "#9b7653";
@@ -17,38 +19,24 @@ export default class Cell {
     this.specialUnit = "None";
 
     if (x === gridSize - 1 && y === gridSize - 1) {
-      this.structure = "Castle";
-      this.defBonus = 5;
+      const Castle = new Structures.Castle();
+      this.structure = Castle.structure;
+      this.defBonus = Castle.defBonus;
       this.controlledBy = "Player2";
       this.color = Player2;
-      this.border = Plains;
     } else if (x === 0 && y === 0) {
-      this.structure = "Castle";
-      this.defBonus = 5;
+      const Castle = new Structures.Castle();
+      this.structure = Castle.structure;
+      this.defBonus = Castle.defBonus;
       this.controlledBy = "Player1";
       this.color = Player1;
-      this.border = Plains;
     } else {
       const roll = Math.floor(Math.random() * 101);
       if (roll <= 12) {
-        this.structure = "Town";
-        this.defBonus = 3;
-        const roll2 = Math.floor(Math.random() * 51);
-        if (roll2 >= 0 && roll2 <= 10) {
-          this.specialUnit = "Archer";
-        }
-        if (roll2 > 10 && roll2 <= 20) {
-          this.specialUnit = "Assassin";
-        }
-        if (roll2 > 20 && roll2 <= 30) {
-          this.specialUnit = "Knight";
-        }
-        if (roll2 > 30 && roll2 <= 40) {
-          this.specialUnit = "Wizard";
-        }
-        if (roll2 > 40 && roll2 <= 50) {
-          this.specialUnit = "Priest";
-        }
+        const Town = new Structures.Town();
+        this.structure = Town.structure;
+        this.defBonus = Town.defBonus;
+        this.specialUnit = Town.specialUnit;
       }
       if (roll > 12 && roll <= 20) {
         this.terrain = "Mountain";

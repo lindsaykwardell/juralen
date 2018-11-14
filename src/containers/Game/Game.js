@@ -9,6 +9,7 @@ import Details from "../../components/Details/Details";
 import Resources from "../../components/Resources/Resources";
 import Commands from "../../components/Commands/Commands";
 import Menu from "../../components/Menu/Menu";
+import LoadMapModal from "../../components/LoadMapModal/LoadMapModal";
 
 import Units from "../../models/Units/Units";
 import {
@@ -43,7 +44,10 @@ const initialGameState = {
   moveCost: 0,
   gameLog: [],
   message: "",
-  activeData: "commands"
+  activeData: "commands",
+  loadMapModal: false,
+  openMapID: "",
+  mapList: []
 };
 
 const mapStateToProps = state => {
@@ -152,7 +156,41 @@ export default connect(
             }
           );
       }
+      this.listener2 = firebase
+        .firestore()
+        .collection("customMaps")
+        .where("uid", "==", firebase.auth().currentUser.uid)
+        .onSnapshot(docs => {
+          const mapList = [];
+          docs.forEach(doc => {
+            const data = doc.data();
+            data.id = doc.id;
+            mapList.push(data);
+          });
+          this.setState({ mapList });
+        });
     }
+
+    toggleLoadMapModal = () => {
+      this.setState({ loadMapModal: !this.state.loadMapModal });
+    };
+
+    loadMap = mapID => {
+      firebase
+        .firestore()
+        .collection("customMaps")
+        .doc(mapID)
+        .get()
+        .then(doc => {
+          const data = doc.data();
+          this.setState({
+            mapName: data.name,
+            grid: Clone.Grid(JSON.parse(data.grid)),
+            resources: Clone.Resources(data.resources),
+            loadMapModal: false
+          });
+        });
+    };
 
     messageInputHandler = e => {
       this.setState({ message: e.target.value });
@@ -313,7 +351,7 @@ export default connect(
           .then(res => {
             this.setState({ ...res }, () => {
               if (this.props.gameMode === "computer" && res.me === "Player2") {
-              //if (this.props.gameMode === "computer") {
+                //if (this.props.gameMode === "computer") {
                 this.runComputerTurn();
               }
               if (this.state.gameID) {
@@ -345,20 +383,19 @@ export default connect(
       let prevOption = {};
       const runningTurn = setInterval(() => {
         const options = analyzeMoves(this.state);
-        
+
         if (options.length > 0) {
           if (JSON.stringify(prevOption) === JSON.stringify(options[0])) {
-            
             clearInterval(runningTurn);
             this.newTurnHandler();
           } else {
             prevOption = options[0];
-            
+
             const s = options[0];
             if (s.action.includes("build")) {
               const option = s.action.split(":");
               this.displayGridElementHandler(this.state.grid[s.y][s.x]);
-              
+
               this.buildUnitHandler(
                 Units[option[1]],
                 this.state.grid[s.y][s.x]
@@ -399,8 +436,10 @@ export default connect(
     };
 
     endGameHandler = () => {
+      this.listener2();
       if (this.props.gameMode === "online") {
         this.listener();
+
         if (this.state.gameID) {
           firebase
             .firestore()
@@ -455,6 +494,7 @@ export default connect(
             <Scoreboard
               currentTurn={this.state.currentTurn}
               endGame={this.endGameHandler}
+              loadMap={this.toggleLoadMapModal}
               saveGame={() => {
                 localStorage.setItem("savedGame", JSON.stringify(this.state));
                 alert("Game saved!");
@@ -532,6 +572,12 @@ export default connect(
               </Col>
             </Row>
           </Menu>
+          <LoadMapModal
+            modal={this.state.loadMapModal}
+            toggle={this.toggleLoadMapModal}
+            mapList={this.state.mapList}
+            loadMap={this.loadMap}
+          />
         </div>
       );
     }
