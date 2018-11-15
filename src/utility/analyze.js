@@ -1,7 +1,6 @@
 import * as Clone from "./clone";
 
 export const analyzeMoves = state => {
-  
   const grid = Clone.Grid(state.grid);
   const resources = Clone.Resources(state.resources);
   const me = state.me;
@@ -23,15 +22,12 @@ export const analyzeMoves = state => {
       }
     });
   });
-  
 
   const results = getMoveList(grid, resources, me, notMe, enemyCells);
-  
 
   results.sort((a, b) => {
-    
-    let scorea = scoreMove(grid, resources, me, notMe, a);
-    let scoreb = scoreMove(grid, resources, me, notMe, b);
+    let scorea = scoreMove(grid, enemyCells, resources, me, notMe, a);
+    let scoreb = scoreMove(grid, enemyCells, resources, me, notMe, b);
 
     if (scorea === scoreb) {
       // Check proximity to enemy
@@ -45,8 +41,7 @@ export const analyzeMoves = state => {
     }
     return scoreb - scorea;
   });
-  
-  
+
   return results;
 };
 
@@ -55,11 +50,8 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
   grid.forEach(row => {
     row.forEach(cell => {
       if (cell.controlledBy === me) {
-        
         if (cell.structure !== "None") {
-          
           if (resources[me].actions >= 1 && resources[me].gold >= 2) {
-            
             results.push({
               x: cell.x,
               y: cell.y,
@@ -73,7 +65,6 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
             resources[me].actions >= 1 &&
             resources[me].gold >= 2
           ) {
-            
             results.push({
               x: cell.x,
               y: cell.y,
@@ -102,7 +93,6 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
               }
             };
             if (resources[me].actions >= 1 && resources[me].gold >= cost()) {
-              
               results.push({
                 x: cell.x,
                 y: cell.y,
@@ -111,15 +101,15 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                 id: []
               });
             }
-            if (resources[me].actions >= 1 && resources[me].gold >= 7){
-              
+            if (resources[me].actions >= 1 && resources[me].gold >= 7) {
               results.push({
                 x: cell.x,
                 y: cell.y,
                 action: "upgrade:Castle",
                 desc: "Upgrade to Castle",
                 id: []
-              });}
+              });
+            }
           }
         }
       }
@@ -135,7 +125,7 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
               notMe,
               [unit]
             );
-            
+
             results.push({
               x: cell.x,
               y: cell.y,
@@ -159,7 +149,6 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                   );
                 });
                 if (key === -1) {
-                  
                   thisOptimalMove = optimalMove(
                     grid,
                     resources,
@@ -196,7 +185,6 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                       );
                     });
                     if (key === -1) {
-                      
                       thisOptimalMove = optimalMove(
                         grid,
                         resources,
@@ -212,7 +200,7 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                         action: thisOptimalMove.isCombat ? "attack" : "move",
                         desc: `Move ${unit.name}, ${unit2.name}, and ${
                           unit3.name
-                          }`,
+                        }`,
                         id: [unit.ID, unit2.ID, unit3.ID],
                         units: [unit, unit2, unit3],
                         coords: [thisOptimalMove.x, thisOptimalMove.y]
@@ -227,11 +215,11 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
       }
     });
   });
-  
-  return results;
-}
 
-const scoreMove = (grid, resources, me, notMe, a) => {
+  return results;
+};
+
+const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
   let scorea = 0;
   if (a.action.includes("attack")) {
     scorea += 10;
@@ -240,6 +228,7 @@ const scoreMove = (grid, resources, me, notMe, a) => {
     let cost = 3;
     if (grid[a.y][a.x].structure === "Castle") {
       cost = 2;
+      scorea += 2;
     }
     if (resources[me].gold >= cost) {
       scorea++;
@@ -275,9 +264,7 @@ const scoreMove = (grid, resources, me, notMe, a) => {
     if (resources[me].units >= resources[me].farms) {
       scorea -= 1000;
     }
-    if (
-      resources[me].gold >= cost()
-    ) {
+    if (resources[me].gold >= cost()) {
       scorea += 2;
       if (resources[me].farms / 2 >= resources[me].units) {
         scorea += 2;
@@ -291,6 +278,18 @@ const scoreMove = (grid, resources, me, notMe, a) => {
     }
     if (resources[me].farms === resources[me].units) {
       scorea += 5;
+    }
+    if (grid[a.y][a.x].units[me].length <= 2 && grid[a.y][a.x].structure !== "None") {
+      scorea -= 2;
+      let distanceToEnemy = 100;
+      enemyCells.forEach(enemyCell => {
+        let thisDistanceToEnemy = getDistance(grid[a.y][a.x], enemyCell);
+        if (distanceToEnemy < thisDistanceToEnemy)
+          distanceToEnemy = thisDistanceToEnemy;
+      });
+      if (distanceToEnemy <= 4) {
+        scorea -= Math.abs(distanceToEnemy - 8);
+      }
     }
     grid.forEach(row => {
       row.forEach(cell => {
@@ -306,7 +305,7 @@ const scoreMove = (grid, resources, me, notMe, a) => {
       });
     });
   }
-  
+
   return scorea;
 };
 
@@ -333,7 +332,6 @@ const optimalMove = (
   notMe,
   units
 ) => {
-  
   let moveOptions = [];
   let thisOptimalMove = {
     x: 0,
@@ -412,10 +410,9 @@ const optimalMove = (
     });
   });
   if (moveOptions.length > 1) {
-    
     const key = Math.floor(Math.random() * moveOptions.length);
     thisOptimalMove = moveOptions[key];
   }
-  
+
   return thisOptimalMove;
 };
