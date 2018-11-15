@@ -49,7 +49,6 @@ export const analyzeMoves = state => {
     return scoreb - scorea;
   });
 
-  console.log(results);
   return results;
 };
 
@@ -320,7 +319,7 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
       grid[a.y][a.x].units[me].length <= 2 &&
       grid[a.y][a.x].structure !== "None"
     ) {
-      console.log("Found underdefended structure");
+      
       scorea -= 2;
       let distanceToEnemy = 100;
       enemyCells.forEach(enemyCell => {
@@ -331,13 +330,13 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
         )
           distanceToEnemy = thisDistanceToEnemy;
       });
-      console.log(distanceToEnemy);
+      
       if (distanceToEnemy <= 4) {
-        console.log("The bad guys are kinda close...");
+        
         scorea -= Math.abs(distanceToEnemy - 6);
       }
       if (distanceToEnemy <= 4 && grid[a.y][a.x].units[me].length <= 1) {
-        console.log("Can't leave this thing alone.");
+        
         scorea -= 1000;
       }
     }
