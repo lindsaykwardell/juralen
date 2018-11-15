@@ -246,7 +246,17 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
           scorea++;
           return 3;
         case "Priest":
-          scorea++;
+          //scorea++;
+          if (grid[a.y][a.x].units[me].length <= 0) {
+            scorea -= 1000;
+          } else {
+            scorea++;
+          }
+          grid[a.y][a.x].units[me].forEach(unit => {
+            if (unit.health < unit.maxHealth) {
+              scorea += 3;
+            }
+          });
           return 4;
         case "Assassin":
           scorea += 2;
@@ -261,16 +271,35 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
           return 0;
       }
     };
-    if (resources[me].units >= resources[me].farms) {
+    if (
+      resources[me].units >= resources[me].farms ||
+      resources[me].gold < cost()
+    ) {
       scorea -= 1000;
-    }
-    if (resources[me].gold >= cost()) {
-      scorea += 2;
+    } else {
+      //scorea += 2;
+      scorea += Math.abs(grid[a.y][a.x].units[me].length - 8);
       if (resources[me].farms / 2 >= resources[me].units) {
         scorea += 2;
       }
-
-      scorea += Math.abs(grid[a.y][a.x].units[me].length - 8);
+      let distanceToEnemy = 100;
+      let enemyCoords = { x: 0, y: 0 };
+      enemyCells.forEach(enemyCell => {
+        let thisDistanceToEnemy = getDistance(grid[a.y][a.x], enemyCell);
+        if (
+          distanceToEnemy < thisDistanceToEnemy &&
+          enemyCell.units[notMe].length > 0
+        )
+          distanceToEnemy = thisDistanceToEnemy;
+      });
+      if (distanceToEnemy <= 4) {
+        if (
+          grid[a.y][a.x].units[me].length <=
+          grid[enemyCoords.y][enemyCoords.x].units[notMe].length
+        ) {
+          scorea += 100;
+        }
+      }
     }
   } else if (a.action.includes("move")) {
     if (resources[me].actions >= 1) {
@@ -279,16 +308,41 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
     if (resources[me].farms === resources[me].units) {
       scorea += 5;
     }
-    if (grid[a.y][a.x].units[me].length <= 2 && grid[a.y][a.x].structure !== "None") {
+    if (
+      grid[a.y][a.x].units[me].length <= 2 &&
+      grid[a.y][a.x].structure !== "None"
+    ) {
       scorea -= 2;
       let distanceToEnemy = 100;
       enemyCells.forEach(enemyCell => {
         let thisDistanceToEnemy = getDistance(grid[a.y][a.x], enemyCell);
-        if (distanceToEnemy < thisDistanceToEnemy)
+        if (
+          distanceToEnemy < thisDistanceToEnemy &&
+          enemyCell.units[notMe].length > 0
+        )
           distanceToEnemy = thisDistanceToEnemy;
       });
-      if (distanceToEnemy <= 4) {
-        scorea -= Math.abs(distanceToEnemy - 8);
+      if (distanceToEnemy <= 8) {
+        scorea -= Math.abs(distanceToEnemy - 10);
+        let hasOnlyPriests = true;
+        grid[a.y][a.x].units[me].forEach(unit => {
+          let checkForPriests = true;
+          a.units.forEach(theseUnits => {
+            if (unit.ID === theseUnits.ID) checkForPriests = false;
+          });
+          if (checkForPriests) {
+            if (unit.name !== "Priest") {
+              hasOnlyPriests = false;
+            } else {
+            }
+          }
+        });
+        if (hasOnlyPriests) {
+          scorea -= 1000;
+        }
+      }
+      if (distanceToEnemy <= 4 && grid[a.y][a.x].units[me].length <= 1) {
+        scorea -= 1000;
       }
     }
     grid.forEach(row => {

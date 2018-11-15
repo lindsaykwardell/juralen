@@ -381,52 +381,23 @@ export default connect(
 
     runComputerTurn = () => {
       let prevOption = {};
+      let prevCount = 0;
       const runningTurn = setInterval(() => {
         const options = analyzeMoves(this.state);
 
         if (options.length > 0) {
           if (JSON.stringify(prevOption) === JSON.stringify(options[0])) {
-            clearInterval(runningTurn);
-            this.newTurnHandler();
+            if (prevCount >= 10) {
+              clearInterval(runningTurn);
+              this.newTurnHandler();
+            } else {
+              prevCount++;
+              this.runComputerAction(options[0]);
+            }
           } else {
             prevOption = options[0];
 
-            const s = options[0];
-            if (s.action.includes("build")) {
-              const option = s.action.split(":");
-              this.displayGridElementHandler(this.state.grid[s.y][s.x]);
-
-              this.buildUnitHandler(
-                Units[option[1]],
-                this.state.grid[s.y][s.x]
-              );
-            }
-            if (s.action.includes("fortify")) {
-              this.fortifyStructureHandler(this.state.grid[s.y][s.x]);
-            }
-            if (s.action.includes("upgrade")) {
-              //const option = s.action.split(":");
-              this.upgradeStructureHandler(this.state.grid[s.y][s.x]);
-            }
-            if (s.action.includes("move") || s.action.includes("attack")) {
-              let moveCost = 0;
-              s.units.forEach(unit => {
-                moveCost += unit.move;
-              });
-              this.setState(
-                {
-                  openCell: Clone.Cell(this.state.grid[s.y][s.x]),
-                  moveCost,
-                  movingSelectedUnits: true,
-                  selectedUnits: [...s.id]
-                },
-                () => {
-                  this.displayGridElementHandler(
-                    this.state.grid[s.coords[1]][s.coords[0]]
-                  );
-                }
-              );
-            }
+            this.runComputerAction(options[0]);
           }
         } else {
           clearInterval(runningTurn);
@@ -434,6 +405,44 @@ export default connect(
         }
       }, 500);
     };
+
+    runComputerAction = s => {
+      if (s.action.includes("build")) {
+        const option = s.action.split(":");
+        this.displayGridElementHandler(this.state.grid[s.y][s.x]);
+
+        this.buildUnitHandler(
+          Units[option[1]],
+          this.state.grid[s.y][s.x]
+        );
+      }
+      if (s.action.includes("fortify")) {
+        this.fortifyStructureHandler(this.state.grid[s.y][s.x]);
+      }
+      if (s.action.includes("upgrade")) {
+        //const option = s.action.split(":");
+        this.upgradeStructureHandler(this.state.grid[s.y][s.x]);
+      }
+      if (s.action.includes("move") || s.action.includes("attack")) {
+        let moveCost = 0;
+        s.units.forEach(unit => {
+          moveCost += unit.move;
+        });
+        this.setState(
+          {
+            openCell: Clone.Cell(this.state.grid[s.y][s.x]),
+            moveCost,
+            movingSelectedUnits: true,
+            selectedUnits: [...s.id]
+          },
+          () => {
+            this.displayGridElementHandler(
+              this.state.grid[s.coords[1]][s.coords[0]]
+            );
+          }
+        );
+      }
+    }
 
     endGameHandler = () => {
       this.listener2();
