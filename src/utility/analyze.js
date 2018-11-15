@@ -25,9 +25,14 @@ export const analyzeMoves = state => {
 
   const results = getMoveList(grid, resources, me, notMe, enemyCells);
 
+  results.forEach(result => {
+    result.score = scoreMove(grid, enemyCells, resources, me, notMe, result);
+    if (result.score < 0) result.action = "null";
+  });
+
   results.sort((a, b) => {
-    let scorea = scoreMove(grid, enemyCells, resources, me, notMe, a);
-    let scoreb = scoreMove(grid, enemyCells, resources, me, notMe, b);
+    let scorea = a.score;
+    let scoreb = b.score;
 
     if (scorea === scoreb) {
       // Check proximity to enemy
@@ -39,9 +44,12 @@ export const analyzeMoves = state => {
         if (adiff < bdiff) scorea++;
       });
     }
+    // Will need to add more checks here
+
     return scoreb - scorea;
   });
 
+  console.log(results);
   return results;
 };
 
@@ -312,36 +320,24 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
       grid[a.y][a.x].units[me].length <= 2 &&
       grid[a.y][a.x].structure !== "None"
     ) {
+      console.log("Found underdefended structure");
       scorea -= 2;
       let distanceToEnemy = 100;
       enemyCells.forEach(enemyCell => {
         let thisDistanceToEnemy = getDistance(grid[a.y][a.x], enemyCell);
         if (
-          distanceToEnemy < thisDistanceToEnemy &&
+          distanceToEnemy > thisDistanceToEnemy &&
           enemyCell.units[notMe].length > 0
         )
           distanceToEnemy = thisDistanceToEnemy;
       });
-      if (distanceToEnemy <= 8) {
-        scorea -= Math.abs(distanceToEnemy - 10);
-        let hasOnlyPriests = true;
-        grid[a.y][a.x].units[me].forEach(unit => {
-          let checkForPriests = true;
-          a.units.forEach(theseUnits => {
-            if (unit.ID === theseUnits.ID) checkForPriests = false;
-          });
-          if (checkForPriests) {
-            if (unit.name !== "Priest") {
-              hasOnlyPriests = false;
-            } else {
-            }
-          }
-        });
-        if (hasOnlyPriests) {
-          scorea -= 1000;
-        }
+      console.log(distanceToEnemy);
+      if (distanceToEnemy <= 4) {
+        console.log("The bad guys are kinda close...");
+        scorea -= Math.abs(distanceToEnemy - 6);
       }
       if (distanceToEnemy <= 4 && grid[a.y][a.x].units[me].length <= 1) {
+        console.log("Can't leave this thing alone.");
         scorea -= 1000;
       }
     }
@@ -403,7 +399,7 @@ const optimalMove = (
         let distanceToEnemy = 100;
         enemyCells.forEach(enemyCell => {
           let thisDistanceToEnemy = getDistance(cell, enemyCell);
-          if (distanceToEnemy < thisDistanceToEnemy)
+          if (distanceToEnemy > thisDistanceToEnemy)
             distanceToEnemy = thisDistanceToEnemy;
         });
         let score = 0;
