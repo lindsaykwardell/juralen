@@ -1,12 +1,16 @@
-## Wars of the Juriels
+## Juralen
 
-This is a fantasy turn-based strategy game based on the world of Ilandrior. Players take turns building soldiers and other units, expanding their kingdoms, and fighting. Take control of half the board, or wipe out your opponent, and you win the game.
+Juralen is a fantasy turn-based strategy game based on the world of Ilandrior. Players take turns building soldiers and other units, expanding their kingdoms, and fighting with their armies. Take control of half the board, or wipe out your opponent, and you win the game.
 
 [Live demo](https://warsofthejuriels.netlify.com/)
 
 ### Story
 
-To come. Basic premise is that a lot of warlords are fighing over the Juralen Valley. Valley is currently dominated by humans, but other races are known to be there.
+(To come) The game covers two eras of history.
+
+The **Tutorial** will cover the life of Ilthanen Juralen, a holy warrior of the kingdom of Ilandri, as he leads an army of crusaders to retake the lost city of Althênor and reestablish human dominance over the ancient lands of Ilandrior. At the end of his campaign, Ilthanen takes the throne, and becomes High King of the Juralen Valley.
+
+The main campaign, **The Dragonslayer Wars**, takes place much later. The lands of Juralen have become divided into smaller kingdoms, each vying for dominance over the others. The city of Althênor, now known as Alden, remains the seat of the High King, but the king's influence has waned in the face of constant warfare. At the peak of military prowess among the Juriel kingdoms, as they were known, rumors begin to spread of dragons returning to the land, and seeking to overthrow humanity once again. Meanwhile, the hillfolk of Halslad have discovered new magic that may be the key to defeating the new dragon threat.
 
 ### Rules
 
