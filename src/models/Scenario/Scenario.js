@@ -1,6 +1,4 @@
-//import { generateGrid } from "../../config/gameCommands";
 import Cell from "../../models/Cell/Cell";
-import * as Clone from "../../utility/clone";
 
 export default class Scenario {
   constructor(
