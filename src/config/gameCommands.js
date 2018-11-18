@@ -31,26 +31,6 @@ export const newTurn = (state, gridSize, gameMode) => {
     let notMe = state.notMe;
     let currentTurn = notMe;
     
-    let gridControlCount = 0;
-    // Check if notMe won last turn
-    // Win cons: control half the board
-    // or opponent controls no towns.
-    state.grid.forEach(row => {
-      row.forEach(cell => {
-        if (cell.controlledBy === me) gridControlCount++;
-      });
-    });
-    if (
-      resources[notMe].towns === 0 ||
-      gridControlCount === (gridSize * gridSize) / 2
-    ) {
-      alert(`${me} has won the game!`);
-      localStorage.removeItem("savedGame");
-      reject();
-    }
-    // Gain resources
-    // Actions are capped at 8
-    // Gold capped at 10
     resources[notMe].actions = 3 + resources[notMe].towns;
     if (resources[notMe].actions > 8) resources[notMe].actions = 8;
     resources[notMe].gold += resources[notMe].farms;

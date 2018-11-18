@@ -13,7 +13,6 @@ import LoadMapModal from "../../components/LoadMapModal/LoadMapModal";
 
 import Units from "../../models/Units/Units";
 import {
-  generateGrid,
   loadGame,
   newTurn,
   buildNewUnit,
@@ -25,6 +24,7 @@ import {
   openSelectedCell,
   endTurn
 } from "../../config/gameCommands";
+import Scenario from "../../models/Scenario/Scenario";
 
 import * as Clone from "../../utility/clone";
 import { analyzeMoves } from "../../utility/analyze";
@@ -74,36 +74,38 @@ export default connect(
   class Game extends Component {
     constructor(props) {
       super(props);
-
+      let thisScenario = new Scenario("quick", {
+        gridSize: { x: props.gridSize, y: props.gridSize }
+      });
       if (props.gameMode === "hotseat" || props.gameMode === "computer") {
         if (props.usingSavedGame) {
           this.state = loadGame(JSON.parse(localStorage.getItem("savedGame")));
         } else {
-          const grid = generateGrid(props.gridSize);
           this.state = {
             ...initialGameState,
-            grid,
-            openCell: grid[0][0]
+            thisScenario,
+            grid: thisScenario.initialGrid,
+            openCell: thisScenario.initialGrid[0][0]
           };
         }
       }
 
       if (props.gameMode === "online" && props.hostingGame) {
-        const grid = generateGrid(props.gridSize);
         this.state = {
           ...initialGameState,
-          grid,
-          openCell: grid[0][0],
+          thisScenario,
+          grid: thisScenario.initialGrid,
+          openCell: thisScenario.initialGrid[0][0],
           gameID: props.selectedGame
         };
       }
 
       if (props.gameMode === "online" && !props.hostingGame) {
-        const grid = generateGrid(props.gridSize);
         this.state = {
           ...initialGameState,
-          grid,
-          openCell: grid[0][0],
+          thisScenario,
+          grid: thisScenario.initialGrid,
+          openCell: thisScenario.initialGrid[0][0],
           me: "Player2",
           notMe: "Player1",
           gameID: props.selectedGame
@@ -120,6 +122,7 @@ export default connect(
             .doc(this.props.selectedGame)
             .set(
               {
+                thisScenario: JSON.stringify(this.state.thisScenario),
                 grid: JSON.stringify(this.state.grid),
                 resources: this.state.resources,
                 currentTurn: this.state.currentTurn,
@@ -141,6 +144,7 @@ export default connect(
                 const grid = Clone.Grid(JSON.parse(data.grid));
                 this.setState({
                   gameID: doc.id,
+                  thisScenario: Clone.Scenario(JSON.parse(data.thisScenario)),
                   grid,
                   openCell: Clone.Cell(
                     grid[this.state.openCell.y][this.state.openCell.x]
@@ -347,8 +351,14 @@ export default connect(
     newTurnHandler = () => {
       endTurn(this.state).then(res => {
         this.setState({ ...res });
-        newTurn(this.state, this.props.gridSize, this.props.gameMode)
-          .then(res => {
+        this.state.thisScenario
+          .checkObjectives(this.state)
+          .then(() => {
+            return newTurn(
+              this.state,
+              this.props.gameMode
+            );
+          }).then(res => {
             this.setState({ ...res }, () => {
               if (this.props.gameMode === "computer" && res.me === "Player2") {
                 //if (this.props.gameMode === "computer") {
@@ -373,6 +383,7 @@ export default connect(
           })
           .catch(() => {
             // end the game
+            alert(`${this.state.me} has won the game!`);
             this.props.endGame();
             this.props.link("Lobby");
           });
@@ -411,10 +422,7 @@ export default connect(
         const option = s.action.split(":");
         this.displayGridElementHandler(this.state.grid[s.y][s.x]);
 
-        this.buildUnitHandler(
-          Units[option[1]],
-          this.state.grid[s.y][s.x]
-        );
+        this.buildUnitHandler(Units[option[1]], this.state.grid[s.y][s.x]);
       }
       if (s.action.includes("fortify")) {
         this.fortifyStructureHandler(this.state.grid[s.y][s.x]);
@@ -442,7 +450,7 @@ export default connect(
           }
         );
       }
-    }
+    };
 
     endGameHandler = () => {
       this.listener2();
