@@ -1,12 +1,21 @@
 .board {
-  background: black;
-  grid-row: 1 / span 4;
+  /* background: black; */
+  /* grid-row: 1 / span 4; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
 }
 
 .board table {
   table-layout: fixed;
-  width: 100%;
-  height: 100%;
+  /* width: 100%; */
+  margin: 0 auto;
+  margin-top: 40px;
+  background: black;
 }
 
 .structure {
@@ -20,6 +29,12 @@
 @media all and (max-width: 768px) {
   .board {
     padding-top: 37px;
+    position: relative;
+  }
+
+  .board table {
+    table-layout: fixed;
+    width: 100%;
   }
 
   .structure {

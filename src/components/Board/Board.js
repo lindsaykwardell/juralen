@@ -1,5 +1,6 @@
 import React from "react";
 import Square from "../Square/Square";
+import Draggable from "react-draggable";
 
 import castle from "../../img/castle.png";
 import town from "../../img/town.jpg";
@@ -192,9 +193,11 @@ export default props => {
 
   return (
     <div className={classes.board}>
-      <table>
-        <tbody>{renderGrid}</tbody>
-      </table>
+      <Draggable>
+        <table style={{width: `${props.zoom}px`}}>
+          <tbody>{renderGrid}</tbody>
+        </table>
+      </Draggable>
     </div>
   );
 };

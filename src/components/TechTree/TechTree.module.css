@@ -1,6 +1,6 @@
 .box {
-  grid-column: 10 / span 2;
-  grid-row: 10;
+  grid-column: 10 / span 3;
+  grid-row: 2 / span 8;
   color: white;
   padding: 15px;
   border: 1px solid white;
@@ -8,6 +8,8 @@
   /* height: 250px; */
   overflow: hidden;
   z-index: 5;
+  margin-right: 60px;
+  margin-bottom: 60px;
 }
 
 @media all and (max-width: 1400px) {

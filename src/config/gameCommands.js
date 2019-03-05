@@ -24,13 +24,13 @@ export const loadGame = state => {
   return { ...state, grid, openCell };
 };
 
-export const newTurn = (state, gridSize, gameMode) => {
+export const newTurn = (state, gameMode) => {
   return new Promise((resolve, reject) => {
     const resources = Clone.Resources(state.resources);
     let me = state.me;
     let notMe = state.notMe;
     let currentTurn = notMe;
-    
+
     resources[notMe].actions = 3 + resources[notMe].towns;
     if (resources[notMe].actions > 8) resources[notMe].actions = 8;
     resources[notMe].gold += resources[notMe].farms;

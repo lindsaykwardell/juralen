@@ -1,9 +1,8 @@
 .game {
-  padding: 10px;
   display: grid;
-  grid-template-columns: 900px minmax(400px, auto);
-  grid-template-rows: 80px 250px 100px auto;
-  grid-gap: 15px;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(10, 10vh);
+  /* grid-gap: 15px; */
 }
 
 @media all and (max-width: 768px) {

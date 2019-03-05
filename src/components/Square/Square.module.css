@@ -18,3 +18,9 @@
   top: 0;
   right: 0;
 }
+
+@media all and (max-width: 768px) {
+  .cell{
+    width: auto;
+  }
+}

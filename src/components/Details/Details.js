@@ -4,34 +4,34 @@ import classes from "./Details.module.css";
 
 export default props => {
   if (props.openCell !== undefined) {
-    let player1Units = "";
-    let player2Units = "";
-    if (props.openCell.units) {
-      if (props.openCell.units.Player1.length > 0) {
-        player1Units = props.openCell.units.Player1.map((unit, index) => {
-          if (
-            props.openCell.terrain === "Forest" &&
-            unit.name === "Assassin" &&
-            (props.me !== "Player1" && props.me !== "Builder")
-          ) {
-            return "";
-          }
-          return <span key={index}>{unit.name} </span>;
-        });
-      }
-      if (props.openCell.units.Player2.length > 0) {
-        player2Units = props.openCell.units.Player2.map((unit, index) => {
-          if (
-            props.openCell.terrain === "Forest" &&
-            unit.name === "Assassin" &&
-            (props.me !== "Player2" && props.me !== "Builder")
-          ) {
-            return "";
-          }
-          return <span key={index}>{unit.name} </span>;
-        });
-      }
-    }
+    // let player1Units = "";
+    // let player2Units = "";
+    // if (props.openCell.units) {
+    //   if (props.openCell.units.Player1.length > 0) {
+    //     player1Units = props.openCell.units.Player1.map((unit, index) => {
+    //       if (
+    //         props.openCell.terrain === "Forest" &&
+    //         unit.name === "Assassin" &&
+    //         (props.me !== "Player1" && props.me !== "Builder")
+    //       ) {
+    //         return "";
+    //       }
+    //       return <span key={index}>{unit.name} </span>;
+    //     });
+    //   }
+    //   if (props.openCell.units.Player2.length > 0) {
+    //     player2Units = props.openCell.units.Player2.map((unit, index) => {
+    //       if (
+    //         props.openCell.terrain === "Forest" &&
+    //         unit.name === "Assassin" &&
+    //         (props.me !== "Player2" && props.me !== "Builder")
+    //       ) {
+    //         return "";
+    //       }
+    //       return <span key={index}>{unit.name} </span>;
+    //     });
+    //   }
+    // }
 
     return (
       <div
@@ -40,26 +40,21 @@ export default props => {
         }`}
         style={{ background: props.openCell.color }}
       >
-        <div className="row">
-          <div className="col">
-            <h3>Details</h3>
-          </div>
-          <div className="col-auto">
-            {props.openCell.x}, {props.openCell.y}
-          </div>
+        <div className="float-right">
+          {props.openCell.x}, {props.openCell.y}
         </div>
         <div>
           Controlled By: {props.openCell.controlledBy}
           <br />
           Terrain: {props.openCell.terrain}
           <br />
-          Structure: {props.openCell.structure} (Defense Bonus:{" "}
+          Structure: {props.openCell.structure} (Def:{" "}
           {props.openCell.defBonus})<br />
-          Units:
+          {/*Units:
           <br />
           Player 1: {player1Units}
           <br />
-          Player 2: {player2Units}
+          Player 2: {player2Units}*/}
         </div>
       </div>
     );

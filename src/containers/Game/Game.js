@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Row, Col, Button } from "reactstrap";
+import { Row, Col, Button, Input } from "reactstrap";
 import firebase from "../../config/db/firebase";
 
 import Board from "../../components/Board/Board";
 import Scoreboard from "../../components/Scoreboard/Scoreboard";
 import Details from "../../components/Details/Details";
+import TechTree from "../../components/TechTree/TechTree";
 import Resources from "../../components/Resources/Resources";
+import UnitList from "../../components/UnitList/UnitList";
 import Commands from "../../components/Commands/Commands";
 import Menu from "../../components/Menu/Menu";
 import LoadMapModal from "../../components/LoadMapModal/LoadMapModal";
@@ -47,7 +49,8 @@ const initialGameState = {
   activeData: "commands",
   loadMapModal: false,
   openMapID: "",
-  mapList: []
+  mapList: [],
+  zoom: 900
 };
 
 const mapStateToProps = state => {
@@ -114,6 +117,8 @@ export default connect(
     }
 
     componentDidMount() {
+      this.autoZoom();
+      window.addEventListener("resize", this.autoZoom);
       if (this.props.gameMode === "online") {
         if (this.props.hostingGame) {
           firebase
@@ -174,6 +179,20 @@ export default connect(
           this.setState({ mapList });
         });
     }
+
+    autoZoom = () => {
+      if (window.innerWidth < 1800 && this.state.zoom > 800) {
+        this.setState({ zoom: 760 });
+      } else if (window.innerWidth >= 1800 && this.state.zoom < 900) {
+        this.setState({ zoom: 900 });
+      } else if (window.innerWidth <= 768) {
+        this.setState({zoom: 400})
+      }
+    };
+
+    toggleZoomHandler = e => {
+      this.setState({ zoom: e.target.value });
+    };
 
     toggleLoadMapModal = () => {
       this.setState({ loadMapModal: !this.state.loadMapModal });
@@ -354,11 +373,9 @@ export default connect(
         this.state.thisScenario
           .checkObjectives(this.state)
           .then(() => {
-            return newTurn(
-              this.state,
-              this.props.gameMode
-            );
-          }).then(res => {
+            return newTurn(this.state, this.props.gameMode);
+          })
+          .then(res => {
             this.setState({ ...res }, () => {
               if (this.props.gameMode === "computer" && res.me === "Player2") {
                 //if (this.props.gameMode === "computer") {
@@ -453,6 +470,7 @@ export default connect(
     };
 
     endGameHandler = () => {
+      window.removeEventListener("resize", this.autoZoom);
       this.listener2();
       if (this.props.gameMode === "online") {
         this.listener();
@@ -496,18 +514,19 @@ export default connect(
     render() {
       return (
         <div>
+          <Board
+            gameMode={this.props.gameMode}
+            grid={this.state.grid}
+            gridSize={this.props.gridSize}
+            openCell={this.state.openCell}
+            movingSelectedUnits={this.state.movingSelectedUnits}
+            moveCost={this.state.moveCost}
+            resources={this.state.resources}
+            me={this.state.me}
+            displayGridElement={this.displayGridElementHandler}
+            zoom={this.state.zoom}
+          />
           <div className={classes.game}>
-            <Board
-              gameMode={this.props.gameMode}
-              grid={this.state.grid}
-              gridSize={this.props.gridSize}
-              openCell={this.state.openCell}
-              movingSelectedUnits={this.state.movingSelectedUnits}
-              moveCost={this.state.moveCost}
-              resources={this.state.resources}
-              me={this.state.me}
-              displayGridElement={this.displayGridElementHandler}
-            />
             <Scoreboard
               currentTurn={this.state.currentTurn}
               endGame={this.endGameHandler}
@@ -524,10 +543,38 @@ export default connect(
                   : this.state.resources.Player2
               }
             />
+            {/*<TechTree />*/}
             <Details
               openCell={this.state.openCell}
               me={this.state.me}
               activeData={this.state.activeData}
+            />
+            <UnitList
+              me={this.state.me}
+              notMe={this.state.notMe}
+              currentTurn={this.state.currentTurn}
+              gameMode={this.props.gameMode}
+              openCell={this.state.openCell}
+              units={Units}
+              buildUnit={this.buildUnitHandler}
+              selectedUnits={this.state.selectedUnits}
+              moveUnits={this.moveUnitsHandler}
+              moveIsActive={this.state.movingSelectedUnits}
+              fortifyStructure={this.fortifyStructureHandler}
+              upgradeStructure={this.upgradeStructureHandler}
+              gameLog={this.state.gameLog}
+              message={this.state.message}
+              activeData={this.state.activeData}
+              messageInput={this.messageInputHandler}
+              submitMessage={this.submitMessageHandler}
+              selectUnit={this.selectUnitHandler}
+              selectAllUnits={() => {
+                selectAllUnits(this.state.openCell.units[this.state.me]).then(
+                  res => {
+                    this.setState({ ...res });
+                  }
+                );
+              }}
             />
             <Commands
               me={this.state.me}
@@ -547,7 +594,6 @@ export default connect(
               activeData={this.state.activeData}
               messageInput={this.messageInputHandler}
               submitMessage={this.submitMessageHandler}
-              newTurn={this.newTurnHandler}
               selectUnit={this.selectUnitHandler}
               selectAllUnits={() => {
                 selectAllUnits(this.state.openCell.units[this.state.me]).then(
@@ -557,6 +603,29 @@ export default connect(
                 );
               }}
             />
+            <div style={{ position: "absolute", top: "60px", right: "5px" }}>
+              <Input
+                type="range"
+                style={{
+                  width: "70vh",
+                  transformOrigin: "35vh 35vh",
+                  transform: "rotate(90deg)"
+                }}
+                min="200"
+                max="1800"
+                value={this.state.zoom}
+                onChange={this.toggleZoomHandler}
+              />
+            </div>
+            <div style={{ gridColumn: "12", gridRow: "10", zIndex: "10" }}>
+              <Button
+                style={{ width: "100%", height: "100%" }}
+                color="success"
+                onClick={this.newTurnHandler}
+              >
+                Pass Turn
+              </Button>
+            </div>
           </div>
           <Menu>
             <Row>
