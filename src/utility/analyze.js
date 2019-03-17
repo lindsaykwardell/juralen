@@ -257,7 +257,14 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
           if (grid[a.y][a.x].units[me].length <= 0) {
             scorea -= 1000;
           } else {
-            scorea++;
+            let onlyPriests = true;
+            grid[a.y][a.x].units[me].forEach(unit => {
+              if (unit.name !== "Priest") {
+                onlyPriests = false;
+              }
+            });
+            if (onlyPriests) scorea -= 1000;
+            else scorea++;
           }
           grid[a.y][a.x].units[me].forEach(unit => {
             if (unit.health < unit.maxHealth) {
@@ -309,6 +316,18 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
       }
     }
   } else if (a.action.includes("move")) {
+    if (resources[me].towns <= 2) {
+      let demerit = 10;
+      if (resources[me].farms === resources[me].units) {
+        demerit = 0;
+      }
+      if (a.units.length > 1) {
+        demerit += 10;
+      } else {
+        demerit -= 5;
+      }
+      scorea += -demerit + grid[a.y][a.x].units[me].length;
+    }
     if (resources[me].actions >= 1) {
       scorea++;
     }
@@ -319,24 +338,24 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
       grid[a.y][a.x].units[me].length <= 2 &&
       grid[a.y][a.x].structure !== "None"
     ) {
-      
       scorea -= 2;
       let distanceToEnemy = 100;
+      let enemyCount = 0;
       enemyCells.forEach(enemyCell => {
         let thisDistanceToEnemy = getDistance(grid[a.y][a.x], enemyCell);
         if (
           distanceToEnemy > thisDistanceToEnemy &&
           enemyCell.units[notMe].length > 0
-        )
+        ) {
           distanceToEnemy = thisDistanceToEnemy;
+          enemyCount = enemyCell.units[notMe].length;
+        }
       });
-      
+
       if (distanceToEnemy <= 4) {
-        
         scorea -= Math.abs(distanceToEnemy - 6);
       }
-      if (distanceToEnemy <= 4 && grid[a.y][a.x].units[me].length <= 1) {
-        
+      if (distanceToEnemy <= 4 && grid[a.y][a.x].units[me].length <= enemyCount) {
         scorea -= 1000;
       }
     }

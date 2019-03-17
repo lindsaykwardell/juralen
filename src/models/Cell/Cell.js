@@ -72,10 +72,7 @@ export default class Cell {
     let atkPlr = me;
     let defPlr = notMe;
 
-    while (
-      this.units[me].length > 0 &&
-      this.units[notMe].length > 0
-    ) {
+    while (this.units[me].length > 0 && this.units[notMe].length > 0) {
       const attacker = Math.floor(Math.random() * this.units[atkPlr].length);
       const defender = Math.floor(Math.random() * this.units[defPlr].length);
 
@@ -177,7 +174,7 @@ export default class Cell {
         defPlr = notMe;
       }
     }
-    
+
     // Restore defBonus to 1 after combat.
     if (
       this.defBonus <= 0 &&
@@ -186,6 +183,6 @@ export default class Cell {
         this.terrain === "Forest")
     )
       this.fortify();
-    return {resources, gameLog};
+    return { resources, gameLog };
   }
 }

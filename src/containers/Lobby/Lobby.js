@@ -209,7 +209,7 @@ export default connect(
                     onClick={this.hostGameHandler}
                   >
                     <h3>
-                      {this.props.gameMode === "hotseat"
+                      {this.props.gameMode !== "online"
                         ? "New Game"
                         : "Host Game"}
                     </h3>
