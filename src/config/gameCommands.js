@@ -137,18 +137,18 @@ export const fortifyStructure = (state, cell) => {
     if (resources[state.me].actions >= 1) {
       if (
         grid[cell.y][cell.x].structure === "Town" &&
-        resources[state.me].gold >= 3
+        resources[state.me].gold >= 2
       ) {
-        resources[state.me].gold -= 3;
+        resources[state.me].gold -= 2;
         resources[state.me].actions--;
         grid[cell.y][cell.x].fortify();
 
         gameLog.unshift(`${state.me} fortified a Town (${cell.x},${cell.y})`);
       } else if (
         grid[cell.y][cell.x].structure === "Castle" &&
-        resources[state.me].gold >= 2
+        resources[state.me].gold >= 1
       ) {
-        resources[state.me].gold -= 2;
+        resources[state.me].gold -= 1;
         resources[state.me].actions--;
         grid[cell.y][cell.x].fortify();
 

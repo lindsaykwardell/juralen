@@ -30,7 +30,7 @@ export default class Commands extends Component {
               )
             }
           >
-            Build Soldier (2)
+            Build Soldier (1)
           </Button>
           {this.props.openCell.specialUnit !== "None" ? (
             <span>
@@ -65,7 +65,7 @@ export default class Commands extends Component {
               color="warning"
               onClick={() => this.props.fortifyStructure(this.props.openCell)}
             >
-              Fortify (3)
+              Fortify (2)
             </Button>
 
             <Button
@@ -90,7 +90,7 @@ export default class Commands extends Component {
               color="warning"
               onClick={() => this.props.fortifyStructure(this.props.openCell)}
             >
-              Fortify (2)
+              Fortify (1)
             </Button>
           </span>
         );
@@ -151,7 +151,10 @@ export default class Commands extends Component {
               this.props.activeData !== "commands" ? classes.inactive : ""
             }
           >
-            {((this.props.gameMode !== "computer" && this.props.me === this.props.currentTurn) || (this.props.gameMode === "computer" && this.props.me !== "Player2") ) ? (
+            {(this.props.gameMode !== "computer" &&
+              this.props.me === this.props.currentTurn) ||
+            (this.props.gameMode === "computer" &&
+              this.props.me !== "Player2") ? (
               <div className={classes.box}>
                 {units}
                 <hr />

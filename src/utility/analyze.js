@@ -70,7 +70,7 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
           if (
             cell.structure === "Castle" &&
             resources[me].actions >= 1 &&
-            resources[me].gold >= 2
+            resources[me].gold >= 1
           ) {
             results.push({
               x: cell.x,
@@ -84,7 +84,7 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
             let cost = () => {
               switch (cell.specialUnit) {
                 case "Soldier":
-                  return 2;
+                  return 1;
                 case "Archer":
                   return 3;
                 case "Priest":
@@ -117,6 +117,17 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                 id: []
               });
             }
+            if (
+                resources[me].actions >= 1 && 
+              resources[me].gold >= 2) {
+              results.push({
+                x: cell.x,
+                y: cell.y,
+                action: "fortify",
+                desc: "Fortify",
+                id: []
+              });
+            }
           }
         }
       }
@@ -132,16 +143,16 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
               notMe,
               [unit]
             );
-
-            results.push({
-              x: cell.x,
-              y: cell.y,
-              action: thisOptimalMove.isCombat ? "attack" : "move",
-              desc: `Move ${unit.name}`,
-              id: [unit.ID],
-              units: [unit],
-              coords: [thisOptimalMove.x, thisOptimalMove.y]
-            });
+            if (thisOptimalMove.score > 0)
+              results.push({
+                x: cell.x,
+                y: cell.y,
+                action: thisOptimalMove.isCombat ? "attack" : "move",
+                desc: `Move ${unit.name}`,
+                id: [unit.ID],
+                units: [unit],
+                coords: [thisOptimalMove.x, thisOptimalMove.y]
+              });
             cell.units[me].forEach(unit2 => {
               if (
                 unit2.ID !== unit.ID &&
@@ -165,15 +176,16 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                     notMe,
                     [unit, unit2]
                   );
-                  results.push({
-                    x: cell.x,
-                    y: cell.y,
-                    action: thisOptimalMove.isCombat ? "attack" : "move",
-                    desc: `Move ${unit.name} and ${unit2.name}`,
-                    id: [unit.ID, unit2.ID],
-                    units: [unit, unit2],
-                    coords: [thisOptimalMove.x, thisOptimalMove.y]
-                  });
+                  if (thisOptimalMove.score > 0)
+                    results.push({
+                      x: cell.x,
+                      y: cell.y,
+                      action: thisOptimalMove.isCombat ? "attack" : "move",
+                      desc: `Move ${unit.name} and ${unit2.name}`,
+                      id: [unit.ID, unit2.ID],
+                      units: [unit, unit2],
+                      coords: [thisOptimalMove.x, thisOptimalMove.y]
+                    });
                 }
 
                 cell.units[me].forEach(unit3 => {
@@ -201,17 +213,18 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                         notMe,
                         [unit, unit2, unit3]
                       );
-                      results.push({
-                        x: cell.x,
-                        y: cell.y,
-                        action: thisOptimalMove.isCombat ? "attack" : "move",
-                        desc: `Move ${unit.name}, ${unit2.name}, and ${
-                          unit3.name
-                        }`,
-                        id: [unit.ID, unit2.ID, unit3.ID],
-                        units: [unit, unit2, unit3],
-                        coords: [thisOptimalMove.x, thisOptimalMove.y]
-                      });
+                      if (thisOptimalMove.score > 0)
+                        results.push({
+                          x: cell.x,
+                          y: cell.y,
+                          action: thisOptimalMove.isCombat ? "attack" : "move",
+                          desc: `Move ${unit.name}, ${unit2.name}, and ${
+                            unit3.name
+                          }`,
+                          id: [unit.ID, unit2.ID, unit3.ID],
+                          units: [unit, unit2, unit3],
+                          coords: [thisOptimalMove.x, thisOptimalMove.y]
+                        });
                     }
                   }
                 });
@@ -232,9 +245,9 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
     scorea += 10;
   }
   if (a.action.includes("fortify")) {
-    let cost = 3;
+    let cost = 2;
     if (grid[a.y][a.x].structure === "Castle") {
-      cost = 2;
+      cost = 1;
       scorea += 2;
     }
     if (resources[me].gold >= cost) {
@@ -248,7 +261,7 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
     let cost = () => {
       switch (action[1]) {
         case "Soldier":
-          return 2;
+          return 1;
         case "Archer":
           scorea++;
           return 3;
@@ -331,7 +344,7 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
     if (resources[me].actions >= 1) {
       scorea++;
     }
-    if (resources[me].farms === resources[me].units) {
+    if (resources[me].farms <= resources[me].units) {
       scorea += 5;
     }
     if (
@@ -355,10 +368,41 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
       if (distanceToEnemy <= 4) {
         scorea -= Math.abs(distanceToEnemy - 6);
       }
-      if (distanceToEnemy <= 4 && grid[a.y][a.x].units[me].length <= enemyCount) {
+      if (
+        distanceToEnemy <= 4 &&
+        grid[a.y][a.x].units[me].length <= enemyCount
+      ) {
         scorea -= 1000;
       }
     }
+
+    // Don't allow priests to move alone.
+    // let priestCount = 0;
+    // let otherUnitCount = 0;
+    // a.units.forEach(unit => {
+    //   if (unit.name === "Priest") priestCount++;
+    //   else otherUnitCount++;
+    // });
+    // if (priestCount === a.units.length) {
+    //   scorea -= 1000;
+    // }
+
+    // // Don't allow units to leave priests alone in a town.
+    // if (grid[a.y][a.x].structure !== "None") {
+    //   let totalPriestCount = 0;
+    //   let totalOtherUnitCount = 0;
+    //   grid[a.y][a.x].units[me].forEach(unit => {
+    //     if (unit.name === "Priest") totalPriestCount++;
+    //     else totalOtherUnitCount++;
+    //   });
+
+    //   if (
+    //     totalOtherUnitCount - otherUnitCount === 0 &&
+    //     totalPriestCount - priestCount > 0
+    //   )
+    //     scorea -= 1000;
+    // }
+
     grid.forEach(row => {
       row.forEach(cell => {
         if (
@@ -456,6 +500,51 @@ const optimalMove = (
           } else {
             score -= 1000;
           }
+        }
+
+        if (
+          units.length === thisCell.units[me].length &&
+          thisCell.structure !== "None"
+        ) {
+          let numberOfNearbyEnemies = 0;
+          enemyCells.forEach(enemyCell => {
+            if (enemyCell.units[notMe].length > 0) {
+              let distance = getDistance(thisCell, enemyCell);
+              if (distance <= resources[notMe].towns + 3) {
+                numberOfNearbyEnemies++;
+              }
+            }
+          });
+          if (
+            (!isCombat && numberOfNearbyEnemies > 0) ||
+            (isCombat && numberOfNearbyEnemies > 1)
+          ) {
+            score -= 1000;
+          }
+        }
+
+        // if (resources[me].towns <= 2) {
+        //   let demerit = 10;
+        //   if (resources[me].farms === resources[me].units) {
+        //     demerit = 0;
+        //   }
+        //   if (units.length > 1) {
+        //     demerit += 10;
+        //   } else {
+        //     demerit -= 5;
+        //   }
+        //   score += -demerit + thisCell.units[me].length;
+        // }
+
+        //        Don't allow priests to move alone.
+        let priestCount = 0;
+        //let otherUnitCount = 0;
+        units.forEach(unit => {
+          if (unit.name === "Priest") priestCount++;
+          //else otherUnitCount++;
+        });
+        if (priestCount === units.length) {
+          score -= 1000;
         }
 
         const thisMove = {

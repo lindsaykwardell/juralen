@@ -396,6 +396,7 @@ export default connect(
       const runningTurn = setInterval(() => {
         const options = analyzeMoves(this.state);
 
+        console.log(options);
         if (options.length > 0 && options[0].score >= 0) {
           if (JSON.stringify(prevOption) === JSON.stringify(options[0])) {
             if (prevCount >= 5) {

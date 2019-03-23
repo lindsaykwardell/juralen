@@ -4,13 +4,13 @@ class Soldier extends Unit {
   constructor() {
     super();
     this.name = "Soldier";
-    this.cost = 2;
+    this.cost = 1;
     this.move = 1;
     this.movesLeft = 1;
     this.maxMoves = 1;
     this.attack = 1;
-    this.health = 3;
-    this.maxHealth = 3;
+    this.health = 2;
+    this.maxHealth = 2;
     this.range = 1;
   }
 }
