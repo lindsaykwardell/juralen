@@ -117,9 +117,7 @@ const getMoveList = (grid, resources, me, notMe, enemyCells) => {
                 id: []
               });
             }
-            if (
-                resources[me].actions >= 1 && 
-              resources[me].gold >= 2) {
+            if (resources[me].actions >= 1 && resources[me].gold >= 2) {
               results.push({
                 x: cell.x,
                 y: cell.y,
@@ -375,34 +373,6 @@ const scoreMove = (grid, enemyCells, resources, me, notMe, a) => {
         scorea -= 1000;
       }
     }
-
-    // Don't allow priests to move alone.
-    // let priestCount = 0;
-    // let otherUnitCount = 0;
-    // a.units.forEach(unit => {
-    //   if (unit.name === "Priest") priestCount++;
-    //   else otherUnitCount++;
-    // });
-    // if (priestCount === a.units.length) {
-    //   scorea -= 1000;
-    // }
-
-    // // Don't allow units to leave priests alone in a town.
-    // if (grid[a.y][a.x].structure !== "None") {
-    //   let totalPriestCount = 0;
-    //   let totalOtherUnitCount = 0;
-    //   grid[a.y][a.x].units[me].forEach(unit => {
-    //     if (unit.name === "Priest") totalPriestCount++;
-    //     else totalOtherUnitCount++;
-    //   });
-
-    //   if (
-    //     totalOtherUnitCount - otherUnitCount === 0 &&
-    //     totalPriestCount - priestCount > 0
-    //   )
-    //     scorea -= 1000;
-    // }
-
     grid.forEach(row => {
       row.forEach(cell => {
         if (
@@ -502,26 +472,26 @@ const optimalMove = (
           }
         }
 
-        if (
-          units.length === thisCell.units[me].length &&
-          thisCell.structure !== "None"
-        ) {
-          let numberOfNearbyEnemies = 0;
-          enemyCells.forEach(enemyCell => {
-            if (enemyCell.units[notMe].length > 0) {
-              let distance = getDistance(thisCell, enemyCell);
-              if (distance <= resources[notMe].towns + 3) {
-                numberOfNearbyEnemies++;
-              }
-            }
-          });
-          if (
-            (!isCombat && numberOfNearbyEnemies > 0) ||
-            (isCombat && numberOfNearbyEnemies > 1)
-          ) {
-            score -= 1000;
-          }
-        }
+        // if (
+        //   units.length === thisCell.units[me].length &&
+        //   thisCell.structure !== "None"
+        // ) {
+        //   let numberOfNearbyEnemies = 0;
+        //   enemyCells.forEach(enemyCell => {
+        //     if (enemyCell.units[notMe].length > 0) {
+        //       let distance = getDistance(thisCell, enemyCell);
+        //       if (distance <= resources[notMe].towns + 3) {
+        //         numberOfNearbyEnemies++;
+        //       }
+        //     }
+        //   });
+        //   if (
+        //     (!isCombat && numberOfNearbyEnemies > 0) ||
+        //     (isCombat && numberOfNearbyEnemies > 1)
+        //   ) {
+        //     score -= 1000;
+        //   }
+        // }
 
         // if (resources[me].towns <= 2) {
         //   let demerit = 10;
@@ -536,16 +506,16 @@ const optimalMove = (
         //   score += -demerit + thisCell.units[me].length;
         // }
 
-        //        Don't allow priests to move alone.
-        let priestCount = 0;
-        //let otherUnitCount = 0;
-        units.forEach(unit => {
-          if (unit.name === "Priest") priestCount++;
-          //else otherUnitCount++;
-        });
-        if (priestCount === units.length) {
-          score -= 1000;
-        }
+        // //        Don't allow priests to move alone.
+        // let priestCount = 0;
+        // //let otherUnitCount = 0;
+        // units.forEach(unit => {
+        //   if (unit.name === "Priest") priestCount++;
+        //   //else otherUnitCount++;
+        // });
+        // if (priestCount === units.length) {
+        //   score -= 1000;
+        // }
 
         const thisMove = {
           x: cell.x,
