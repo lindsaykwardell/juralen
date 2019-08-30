@@ -142,9 +142,10 @@ export default connect(
                 this.gameCrashedHandler();
               } else {
                 const grid = Clone.Grid(JSON.parse(data.grid));
+                const scenario = Clone.Scenario(JSON.parse(data.thisScenario));
                 this.setState({
                   gameID: doc.id,
-                  thisScenario: Clone.Scenario(JSON.parse(data.thisScenario)),
+                  thisScenario: scenario,
                   grid,
                   openCell: Clone.Cell(
                     grid[this.state.openCell.y][this.state.openCell.x]
@@ -348,17 +349,46 @@ export default connect(
         });
     };
 
+    checkObjectives = () => {
+      return new Promise((resolve, reject) => {
+        this.state.thisScenario.objectives.forEach(objective => {
+          switch (objective.type) {
+            case "boardControl":
+              let gridControlCount = 0;
+              this.state.grid.forEach(row => {
+                row.forEach(cell => {
+                  if (cell.controlledBy === this.state.me) gridControlCount++;
+                });
+              });
+              if (
+                gridControlCount >=
+                (this.state.grid[0].length * this.state.grid.length) /
+                  objective.value
+              ) {
+                reject();
+              }
+              break;
+            case "belowMinTownCount":
+              if (this.state.resources[this.state.notMe].towns === 0) {
+                reject();
+              }
+              break;
+            default:
+            // Do nothing.
+          }
+        });
+        resolve();
+      });
+    };
+
     newTurnHandler = () => {
       endTurn(this.state).then(res => {
         this.setState({ ...res });
-        this.state.thisScenario
-          .checkObjectives(this.state)
+        this.checkObjectives()
           .then(() => {
-            return newTurn(
-              this.state,
-              this.props.gameMode
-            );
-          }).then(res => {
+            return newTurn(this.state, this.props.gameMode);
+          })
+          .then(res => {
             this.setState({ ...res }, () => {
               if (this.props.gameMode === "computer" && res.me === "Player2") {
                 //if (this.props.gameMode === "computer") {
